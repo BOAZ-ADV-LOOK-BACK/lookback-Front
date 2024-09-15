@@ -12,17 +12,43 @@ const GoogleCallback = () => {
     const accessToken = fragment.get('access_token');
 
     if (accessToken) {
-      // 액세스 토큰으로 필요한 작업 수행 (예: 사용자 정보 가져오기)
+      // 액세스 토큰으로 필요한 작업 수행 (예: 백엔드로 토큰 전달)
       console.log("Access Token:", accessToken);
 
-      // 후속 처리 후 원하는 페이지로 리디렉션
-      router.replace('/dashboard');
+      // 백엔드로 액세스 토큰 전송
+      sendTokenToBackend(accessToken)
+        .then(() => {
+          // 후속 처리 후 원하는 페이지로 리디렉션
+          router.replace('/dashboard');
+        })
+        .catch((error) => {
+          console.error('Error sending token to backend:', error);
+          router.replace('/');
+        });
     } else {
       // 토큰이 없는 경우 오류 처리
       console.error('Access token not found');
       router.replace('/');
     }
   }, [router]);
+
+  const sendTokenToBackend = async (accessToken: string) => {
+    try {
+      const response = await fetch('/api/save-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ accessToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send token to backend');
+      }
+    } catch (error) {
+      throw new Error(`Error: ${error.message}`);
+    }
+  };
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
