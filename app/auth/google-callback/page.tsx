@@ -34,14 +34,14 @@ const GoogleCallback = () => {
 
   const sendTokenToBackend = async (accessToken: string) => {
     try {
-      const response = await fetch('/api/save-token', {
+      const response = await fetch('http://15.164.20.218:8000/api/v1/save-token', { // 백엔드 URL과 포트 지정
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ accessToken }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to send token to backend');
       }
@@ -49,6 +49,7 @@ const GoogleCallback = () => {
       throw new Error(`Error: ${error.message}`);
     }
   };
+  
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
