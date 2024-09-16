@@ -34,7 +34,7 @@ const GoogleCallback = () => {
 
   const sendTokenToBackend = async (accessToken: string) => {
     try {
-      const response = await fetch('http://15.164.20.218:8000/api/v1/save-token', { // 백엔드 URL과 포트 지정
+      const response = await fetch('http://15.164.20.218:8000/api/v1/token', { // 백엔드 URL과 포트 지정
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
