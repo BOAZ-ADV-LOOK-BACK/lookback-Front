@@ -30,7 +30,7 @@ const fetchProgress = async (): Promise<number> => {
   return Math.floor(Math.random() * 101) // 0-100 사이의 랜덤 값 반환
 }
 
-export default function GodLifeIndex() {
+export function GodLifeIndex() {
   const [progress, setProgress] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -71,6 +71,7 @@ export default function GodLifeIndex() {
           <span className="text-2xl font-bold text-gray-700">{`${progress}%`}</span>
         </div>
       </div>
+      <span className="mt-4 text-2xl font-bold">갓생지수!</span>
     </div>
   )
 }
