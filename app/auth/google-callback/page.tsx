@@ -8,4 +8,4 @@ const GoogleCallbackPage = () => {
   return <GoogleCallback />;
 };
 
-export default GoogleCallbackPage;
+export default GoogleCallback;
