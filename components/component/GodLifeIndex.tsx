@@ -16,6 +16,11 @@ import { useState, useEffect } from 'react'
 
 // 가상의 API 호출 함수
 const fetchProgress = async (): Promise<number> => {
+  await new Promise(resolve => setTimeout(resolve, 1000)) // 1초 지연을 시뮬레이션
+
+
+  return Math.floor(Math.random() * 101) // 0-100 사이의 랜덤 값 반환, 실제 값 하나 return하게 하면 더 이상 계속 안 변함
+
   // 실제 API 호출로 대체해야 합니다
   // 예시:
   // const response = await fetch('https://api.look-back.site/api/v1/save-token', {
@@ -25,12 +30,13 @@ const fetchProgress = async (): Promise<number> => {
   //   },
   //   body: JSON.stringify({ access_token: accessToken }),
   // });
-
-  await new Promise(resolve => setTimeout(resolve, 1000)) // 1초 지연을 시뮬레이션
-  return Math.floor(Math.random() * 101) // 0-100 사이의 랜덤 값 반환
 }
 
-export function GodLifeIndex() {
+interface GodLifeIndexProps {
+  onProgress: (progress: number | null) => void;  // progress를 전달할 콜백 함수
+}
+
+export function GodLifeIndex({ onProgress }: GodLifeIndexProps) {
   const [progress, setProgress] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -41,6 +47,7 @@ export function GodLifeIndex() {
         setIsLoading(true)
         const data = await fetchProgress()
         setProgress(data)
+        onProgress(data)  // progress 값을 부모 컴포넌트로 전달
         setError(null)
       } catch (err) {
         setError('데이터를 불러오는 데 실패했습니다.')
@@ -50,28 +57,17 @@ export function GodLifeIndex() {
     }
 
     getProgress()
-  }, [])
+  }, [onProgress])  // onProgress가 변할 때마다 useEffect가 실행됨
+  
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>
+    return null; // 로딩 중일 때는 아무것도 렌더링하지 않음
   }
 
   if (error) {
-    return <div className="flex items-center justify-center min-h-screen text-red-500">{error}</div>
+    console.error(error);
+    return null;
   }
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="relative w-64 h-96 bg-gray-200 rounded-lg overflow-hidden">
-        <div
-          className="absolute bottom-0 left-0 right-0 bg-blue-500 transition-all duration-500 ease-out"
-          style={{ height: `${progress}%` }}
-        ></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-gray-700">{`${progress}%`}</span>
-        </div>
-      </div>
-      <span className="mt-4 text-2xl font-bold">갓생지수!</span>
-    </div>
-  )
+  return null; // 이제 이 컴포넌트는 progress만 전달하고 아무것도 렌더링하지 않음
 }
