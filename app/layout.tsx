@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 };
 
 if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-  // throw new Error('Missing Google Client ID');
+  throw new Error('Missing Google Client ID');
 }
 
 const clientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
