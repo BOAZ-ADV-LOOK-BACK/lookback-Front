@@ -156,17 +156,17 @@ export function lookbackDashboardAfterlogin() {
                     <div className="flex flex-col gap-4 h-[600px]"> {/* 세로로 두 개의 카드 배치, 총 높이 400px */}
                       <Card className="flex-1"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
                         <CardHeader>
-                            <CardDescription>God Life Index</CardDescription>
+                            <CardDescription>지난 주 보다 14.8시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
                             <CardTitle>{godlifeprogress !== null ? `${godlifeprogress}%` : 'Loading...'}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Progress value={godlifeprogress !== null ? godlifeprogress : 0} aria-label={`${godlifeprogress}% goal completion`} />
+                            <Progress value={godlifeprogress !== null ? godlifeprogress : 0} aria-label={`${godlifeprogress}% progress 향상`} />
                         </CardContent>
                       </Card>
                       <Card className="flex-1 h-[400px] "> {/* 두 번째 카드가 높이의 절반을 차지 */}
                         <CardHeader>
-                            <CardDescription>Time Utilization</CardDescription>
-                            <CardTitle>78%</CardTitle>
+                            <CardDescription>일정 비율</CardDescription>
+                            <CardTitle>Time Utilization: 78%</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <PiechartcustomChart className="aspect-[4/3]" />
