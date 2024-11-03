@@ -23,7 +23,7 @@ const GoogleCallback = () => {
       if (accessToken) {
         sendTokenToBackend(accessToken)
           .then(() => {
-            router.replace('/dashboard');
+            router.replace('/dashboard-afterlogin');
           })
           .catch(() => {
             router.replace('/');
