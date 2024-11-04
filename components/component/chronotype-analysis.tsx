@@ -40,12 +40,14 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
       <CardContent className="flex justify-center p-6">
         <div className="relative w-72 h-40">
           <div
-            className={`absolute left-4 top-0 flex flex-col items-center justify-center w-36 h-36 rounded-full transition-all duration-300 overflow-hidden ${
+            className={`absolute left-4 top-0 flex flex-col items-center justify-center rounded-full transition-all duration-300 overflow-hidden ${
               !isEveningType
-                ? 'bg-blue-500 text-white z-10 scale-105 shadow-lg'
-                : 'bg-blue-200 text-blue-800 z-0 shadow-md'
+                ? 'bg-blue-500 text-white z-10' 
+                : 'bg-blue-200 text-blue-800 z-0'
             }`}
             style={{
+              width: !isEveningType ? '200px' : '120px', // 아침형일 때 크기 30% 증가
+              height: !isEveningType ? '200px' : '120px',
               boxShadow: !isEveningType
                 ? '0 10px 25px rgba(59, 130, 246, 0.5)'
                 : '0 5px 15px rgba(59, 130, 246, 0.3)',
@@ -62,12 +64,14 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
           </div>
           
           <div
-            className={`absolute right-4 top-0 flex flex-col items-center justify-center w-36 h-36 rounded-full transition-all duration-300 overflow-hidden ${
+            className={`absolute right-4 top-0 flex flex-col items-center justify-center rounded-full transition-all duration-300 overflow-hidden ${
               isEveningType
-                ? 'bg-purple-500 text-white z-10 scale-105 shadow-lg'
-                : 'bg-purple-200 text-purple-800 z-0 shadow-md'
+                ? 'bg-purple-500 text-white z-10'
+                : 'bg-purple-200 text-purple-800 z-0'
             }`}
             style={{
+              width: isEveningType ? '200px' : '120px', // 저녁형일 때 크기 30% 증가
+              height: isEveningType ? '200px' : '120px',
               boxShadow: isEveningType
                 ? '0 10px 25px rgba(147, 51, 234, 0.5)'
                 : '0 5px 15px rgba(147, 51, 234, 0.3)',
