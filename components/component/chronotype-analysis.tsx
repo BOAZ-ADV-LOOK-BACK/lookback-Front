@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import ImgSparrow from '@/public/sparrow_transparent.png';
 import ImgOwl from '@/public/owl_transparent.png';
 import Image from "next/image";
@@ -32,11 +32,10 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
     const isEveningType = averageMidTime > 17;
 
     return (
-        <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-lg font-medium text-center">
-          이하윤님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요
-        </CardTitle>
+        <CardTitle> 이하윤님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요 </CardTitle>
+        <CardDescription>매일 활동 시간</CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center p-6">
         <div className="relative w-72 h-40">

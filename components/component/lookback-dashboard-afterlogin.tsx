@@ -15,7 +15,7 @@ import { ChartTooltipContent, ChartTooltip, ChartContainer } from "@/components/
 import { ResponsiveLine } from "@nivo/line"
 
 import { GodLifeIndex } from "@/components/component/GodLifeIndex"
-import { CalendarEventVisualization } from "@/components/component/Owl-or-Sparrow"
+import { CalendarEventVisualization } from "@/components/component/active-time"
 import { ChronotypeAnalysis } from "@/components/component/chronotype-analysis"
 
 
