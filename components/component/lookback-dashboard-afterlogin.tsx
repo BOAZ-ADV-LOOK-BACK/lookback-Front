@@ -16,6 +16,7 @@ import { ResponsiveLine } from "@nivo/line"
 
 import { GodLifeIndex } from "@/components/component/GodLifeIndex"
 import { CalendarEventVisualization } from "@/components/component/Owl-or-Sparrow"
+import { ChronotypeAnalysis } from "@/components/component/chronotype-analysis"
 
 
 export function lookbackDashboardAfterlogin() {
@@ -198,6 +199,7 @@ export function lookbackDashboardAfterlogin() {
                         </CardContent>
                     </Card>
                     <CalendarEventVisualization /> {/* CalendarEventVisualization를 컴포넌트로 사용 */}
+                    <ChronotypeAnalysis/> {/* chronotype-analysis를 컴포넌트로 사용 */}
                   </div>
                 </div>
           </main>
