@@ -3,46 +3,61 @@
 import { Button } from "@/components/ui/button"
 import { CalendarDays, BarChart2, Clock, ChevronRight } from "lucide-react"
 import { useState, useEffect } from 'react'
+import { useGoogleLogin } from "@react-oauth/google";
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const GoogleLoginBtn = () => {
-//  const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-//  const REDIRECT_URI = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI;
-//  const SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
 
-//  const handleGoogleLogin = () => {
-//    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
-//    window.location.href = googleOAuthUrl;
-
-//라이브러리 사용 + 인증코드만 받아서 백엔드로 전송
     const googleSocialLogin = useGoogleLogin({
-      scope: "calendar",
-      onSuccess: async ({ code }) => {
-          axios
-              .post("https://api.look-back.site/api/v1/login", {code})
-              .then(({data}) => {
-                  console.log(data)
-              });
-      },
-
-      onError:(errorResponse) => {
-          console.error(errorResponse);
-      },
-
-      flow: "auth-code",
+        scope: 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid',
+        flow: "auth-code",
+        onSuccess: async ({ code }) => {
+            setIsLoading(true);
+            try {
+                const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
+                console.log("Login success:", response.data);
+                // 성공 시 dashboard로 리다이렉트
+                router.replace('/dashboard-afterlogin');
+            } catch (error) {
+                console.error("Login error:", error);
+                setIsLoading(false);
+                // 에러 시 홈으로 리다이렉트
+                router.replace('/');
+            }
+        },
+        onError: (errorResponse) => {
+            console.error("Google login error:", errorResponse);
+            setIsLoading(false);
+            router.replace('/');
+        }
     });
 
-    return (
-      <Button 
-        //onClick={handleGoogleLogin}
-        onClick={googleSocialLogin}
-        size="lg"
-        className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
-      >
-        Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
-      </Button>
-    );
+    if (isLoading) {
+        return (
+            <div className="w-full h-screen fixed top-0 left-0 flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 z-50">
+                <div className="relative w-24 h-24 mb-8">
+                    <div className="absolute top-0 left-0 w-full h-full border-4 border-white rounded-full animate-spin border-t-transparent"></div>
+                    <div className="absolute top-0 left-0 w-full h-full border-4 border-white rounded-full animate-ping opacity-75"></div>
+                </div>
+                <h1 className="text-3xl font-bold text-white animate-pulse">로그인 처리 중...</h1>
+            </div>
+        );
+    }
 
+    return (
+        <Button 
+            onClick={googleSocialLogin}
+            size="lg"
+            className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
+        >
+            Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
+        </Button>
+    );
 };
+
 
 
 
@@ -55,14 +70,15 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
 );
 
 export default function LandingPage() {
+  // 기존 코드는 그대로 유지
   const [gradientPosition, setGradientPosition] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setGradientPosition((prevPosition) => (prevPosition + 1) % 100);
-    }, 50);
+      const intervalId = setInterval(() => {
+          setGradientPosition((prevPosition) => (prevPosition + 1) % 100);
+      }, 50);
 
-    return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -118,7 +134,7 @@ export default function LandingPage() {
         </main>
 
         <footer className="py-6 text-center text-white bg-gray-800 bg-opacity-90 w-full">
-          <p>&copy; 2023 look-back. All rights reserved.</p>
+          <p>&copy; 2024 look-back. All rights reserved.</p>
         </footer>
       </div>
     </div>
