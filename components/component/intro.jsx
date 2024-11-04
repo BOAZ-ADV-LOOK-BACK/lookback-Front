@@ -5,25 +5,46 @@ import { CalendarDays, BarChart2, Clock, ChevronRight } from "lucide-react"
 import { useState, useEffect } from 'react'
 
 const GoogleLoginBtn = () => {
-  const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-  const REDIRECT_URI = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI;
-  const SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+//  const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+//  const REDIRECT_URI = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI;
+//  const SCOPE = "https://www.googleapis.com/auth/userinfo.email";
 
-  const handleGoogleLogin = () => {
-    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
-    window.location.href = googleOAuthUrl;
-  };
+//  const handleGoogleLogin = () => {
+//    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
+//    window.location.href = googleOAuthUrl;
 
-  return (
-    <Button 
-      onClick={handleGoogleLogin}
-      size="lg"
-      className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
-    >
-      Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
-    </Button>
-  );
+//라이브러리 사용 + 인증코드만 받아서 백엔드로 전송
+    const googleSocialLogin = useGoogleLogin({
+      scope: "calendar",
+      onSuccess: async ({ code }) => {
+          axios
+              .post("https://api.look-back.site/api/v1/login", {code})
+              .then(({data}) => {
+                  console.log(data)
+              });
+      },
+
+      onError:(errorResponse) => {
+          console.error(errorResponse);
+      },
+
+      flow: "auth-code",
+    });
+
+    return (
+      <Button 
+        //onClick={handleGoogleLogin}
+        onClick={googleSocialLogin}
+        size="lg"
+        className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
+      >
+        Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
+      </Button>
+    );
+
 };
+
+
 
 const FeatureCard = ({ icon: Icon, title, description }) => (
   <div className="bg-white p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
