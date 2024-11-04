@@ -14,10 +14,6 @@ import {
 } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-// image import
-import ImgSparrow from '@/public/sparrow_transparent.png';
-import ImgOwl from '@/public/owl_transparent.png';
-
 // 가상의 이벤트 데이터 (실제로는 Google Calendar API에서 받아온 데이터를 사용해야 합니다)
 const events = [
   { day: 1, startTime: 9, endTime: 17 },
@@ -92,7 +88,7 @@ export function CalendarEventVisualization() {
         <CardDescription>Visualizing event durations throughout the year!</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[600px]" aria-label="Calendar event visualization chart">
+        <div className="h-[300px]" aria-label="Calendar event visualization chart">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               margin={{ top: 20, right: 20, bottom: 20, left: 40 }}
@@ -101,25 +97,6 @@ export function CalendarEventVisualization() {
                 borderRadius: "8px"
               }}
             >
-              <defs>
-                {/* 위쪽 이미지(참새) 패턴 */}
-                <pattern id="topImagePattern" patternUnits="userSpaceOnUse" width={800} height={300}>
-                  <image href={ImgSparrow.src} x="0" y="30" width={400} height={150} />
-                </pattern>
-                {/* 아래쪽 이미지(부엉이) 패턴 */}
-                <pattern id="bottomImagePattern" patternUnits="userSpaceOnUse" width={800} height={300}>
-                  <image href={ImgOwl.src} x="0" y="80" width={400} height={150} />
-                </pattern>
-              </defs>
-              {/* 위쪽 이미지 배경 */}
-              <rect width="100%" height="300" fill="url(#topImagePattern)" />
-              {/* 아래쪽 이미지 배경 */}
-              <rect y={300} width="100%" height="300" fill="url(#bottomImagePattern)" />
-
-
-
-
-
               <XAxis
                 type="number"
                 dataKey="day"
