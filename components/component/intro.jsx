@@ -1,29 +1,31 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
-import { CalendarDays, BarChart2, Clock, ChevronRight } from "lucide-react"
-import { useState, useEffect } from 'react'
+import { Button } from "@/components/ui/button";
+import { CalendarDays, BarChart2, Clock, ChevronRight } from "lucide-react";
+import { useState, useEffect } from 'react';
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
+// Google 로그인 버튼
 const GoogleLoginBtn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const googleSocialLogin = useGoogleLogin({
-      scope: 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid',
+      scope: 'https://www.googleapis.com/auth/userinfo.email openid',
       flow: "auth-code",
       onSuccess: async ({ code }) => {
           setIsLoading(true);
           try {
               const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
               console.log("Login success:", response.data);
-              
-              // 사용자 타입에 따라 다른 페이지로 리다이렉트
+
+              const userEmail = response.data.user.email;
+
               if (response.data.isNewUser) {
-                  // 새로운 사용자는 추가 정보 입력 페이지로
-                  router.replace('/additional-info');
+                  // 새로운 사용자는 추가 정보 입력 페이지로 이동하면서 이메일 전달
+                  router.replace(`/additional-info?email=${userEmail}`);
               } else {
                   // 기존 사용자는 대시보드로
                   router.replace('/dashboard-afterlogin');
@@ -41,32 +43,18 @@ const GoogleLoginBtn = () => {
       }
   });
 
-    if (isLoading) {
-        return (
-            <div className="w-full h-screen fixed top-0 left-0 flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 z-50">
-                <div className="relative w-24 h-24 mb-8">
-                    <div className="absolute top-0 left-0 w-full h-full border-4 border-white rounded-full animate-spin border-t-transparent"></div>
-                    <div className="absolute top-0 left-0 w-full h-full border-4 border-white rounded-full animate-ping opacity-75"></div>
-                </div>
-                <h1 className="text-3xl font-bold text-white animate-pulse">로그인 처리 중...</h1>
-            </div>
-        );
-    }
-
-    return (
-        <Button 
-            onClick={googleSocialLogin}
-            size="lg"
-            className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
-        >
-            Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
-        </Button>
-    );
+  return (
+    <Button 
+      onClick={googleSocialLogin}
+      size="lg"
+      className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
+    >
+      Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
+    </Button>
+  );
 };
 
-
-
-
+// 개별 기능 카드
 const FeatureCard = ({ icon: Icon, title, description }) => (
   <div className="bg-white p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
     <Icon className="h-16 w-16 text-blue-500 mb-4 animate-pulse" />
@@ -75,8 +63,8 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
   </div>
 );
 
+// 랜딩 페이지 컴포넌트
 export default function LandingPage() {
-  // 기존 코드는 그대로 유지
   const [gradientPosition, setGradientPosition] = useState(0);
 
   useEffect(() => {

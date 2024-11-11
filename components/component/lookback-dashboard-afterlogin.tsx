@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress"
 import { Pie, PieChart, CartesianGrid, XAxis, Line,  Bar, BarChart } from "recharts"
 import { ChartTooltipContent, ChartTooltip, ChartContainer } from "@/components/ui/chart"
 import { ResponsiveLine } from "@nivo/line"
-
+import UpcomingSchedule from "@/components/component/Upcoming_schedule"
 import { GodLifeIndex } from "@/components/component/GodLifeIndex"
 import { CalendarEventVisualization } from "@/components/component/active-time"
 import { ChronotypeAnalysis } from "@/components/component/chronotype-analysis"
@@ -201,6 +201,7 @@ export function lookbackDashboardAfterlogin() {
                     <CalendarEventVisualization /> {/* CalendarEventVisualization를 컴포넌트로 사용 */}
                     <ChronotypeAnalysis/> {/* chronotype-analysis를 컴포넌트로 사용 */}
                   </div>
+                  <UpcomingSchedule />
                 </div>
           </main>
         </div>
