@@ -8,32 +8,38 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 const GoogleLoginBtn = () => {
-    const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-    const googleSocialLogin = useGoogleLogin({
-        scope: 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid',
-        flow: "auth-code",
-        onSuccess: async ({ code }) => {
-            setIsLoading(true);
-            try {
-                const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
-                console.log("Login success:", response.data);
-                // 성공 시 dashboard로 리다이렉트
-                router.replace('/dashboard-afterlogin');
-            } catch (error) {
-                console.error("Login error:", error);
-                setIsLoading(false);
-                // 에러 시 홈으로 리다이렉트
-                router.replace('/');
-            }
-        },
-        onError: (errorResponse) => {
-            console.error("Google login error:", errorResponse);
-            setIsLoading(false);
-            router.replace('/');
-        }
-    });
+  const googleSocialLogin = useGoogleLogin({
+      scope: 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid',
+      flow: "auth-code",
+      onSuccess: async ({ code }) => {
+          setIsLoading(true);
+          try {
+              const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
+              console.log("Login success:", response.data);
+              
+              // 사용자 타입에 따라 다른 페이지로 리다이렉트
+              if (response.data.isNewUser) {
+                  // 새로운 사용자는 추가 정보 입력 페이지로
+                  router.replace('/additional-info');
+              } else {
+                  // 기존 사용자는 대시보드로
+                  router.replace('/dashboard-afterlogin');
+              }
+          } catch (error) {
+              console.error("Login error:", error);
+              setIsLoading(false);
+              router.replace('/');
+          }
+      },
+      onError: (errorResponse) => {
+          console.error("Google login error:", errorResponse);
+          setIsLoading(false);
+          router.replace('/');
+      }
+  });
 
     if (isLoading) {
         return (
