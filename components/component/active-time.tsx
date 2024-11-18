@@ -60,7 +60,7 @@ const CustomXAxisTick = ({ x, y, payload }) => {
   if (index !== -1) {
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
+        <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={10}>
           {monthNames[index]}
         </text>
       </g>
@@ -84,14 +84,14 @@ export function CalendarEventVisualization() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>내 활동시간은 아침형일까 저녁형일까?</CardTitle>
-        <CardDescription>Visualizing event durations throughout the year!</CardDescription>
+        <CardTitle>나는 주로 언제 활동할까?</CardTitle>
+        <CardDescription>주 활동 시간대</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]" aria-label="Calendar event visualization chart">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
-              margin={{ top: 20, right: 20, bottom: 20, left: 40 }}
+              margin={{ top: 20, right: 20, bottom: 20, left: 10 }}
               style={{
                 background: "linear-gradient(to bottom, #ffebcd 50%, #2c3e50)", // 위는 밝은색, 아래는 어두운색
                 borderRadius: "8px"
@@ -106,7 +106,7 @@ export function CalendarEventVisualization() {
                 tick={<CustomXAxisTick />}
                 axisLine={{ stroke: "#ffffff" }}  // 축 색상
                 tickLine={{ stroke: "#ffffff" }}  // 축의 tick 선 색상
-                tick={{ fill: "#ffffff" }}        // 글씨 색상
+                tick={{ fill: "#ffffff", fontSize: 10}}        // 글씨 색상
               />
               <YAxis
                 type="number"
@@ -117,23 +117,26 @@ export function CalendarEventVisualization() {
                 tickFormatter={(value) => `${value}:00`}
                 axisLine={{ stroke: "#0000FF" }}  // Y축 색상
                 tickLine={{ stroke: "#0000FF" }}  // Y축의 tick 선 색상
-                tick={{ fill: "#0000FF" }}        // Y축 글씨 색상
+                tick={{ fill: "#0000FF",fontSize: 10 }}        // Y축 글씨 색상
                 reversed
               />
               <ZAxis type="number" dataKey="duration" range={[20, 100]} />
               <Tooltip content={<CustomTooltip />} />
               <ReferenceLine y={12} stroke="#666" strokeDasharray="3 3" />
-              {eventData.map((event, index) => (
+              {eventData.map((event, index) => {
+                const isBeforeNoon = event.midTime <=12;
+                return (
                 <ReferenceLine
                   key={`line-${index}`}
                   segment={[
                     { x: event.day, y: event.startTime },
                     { x: event.day, y: event.endTime }
                   ]}
-                  stroke="#8884d8"
+                  stroke={isBeforeNoon ? "#8884d8" : "#ff4d4d"}
                   strokeWidth={7}
                 />
-              ))}
+              );
+            })}
               
               <Scatter 
                 data={eventData}
