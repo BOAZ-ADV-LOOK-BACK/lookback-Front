@@ -151,11 +151,14 @@ export function lookbackDashboardAfterlogin() {
                         </Popover>
                     </div>
                 </div>
-                <div className="grid gap-6">
-                  <div className="grid md:grid-cols-3 gap-6 gap-y-4"> {/* 열 gap = 6, 행 gap = 4 */}
+                <div className="grid gap-6 w-full max-w-screen-xl mx-auto">
+                  <div className="grid gap-6 w-full"
+                       style={{ display: "grid",
+                        gridTemplateColumns: "minmax(200px, 2fr) 3fr",
+                       }}> {/* 열 gap = 6, 행 gap = 4 */}
                     <GodLifeIndex onProgress={handleProgress} />
-                    <div className="flex flex-col gap-4 h-[600px]"> {/* 세로로 두 개의 카드 배치, 총 높이 400px */}
-                      <Card className="flex-1"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
+                    <div className="flex flex-col gap-4 h-[550px]"> {/* 세로로 두 개의 카드 배치, 총 높이 400px */}
+                      <Card className="flex-1 h-[200px]"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
                         <CardHeader>
                             <CardDescription>지난 주 보다 14.8시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
                             <CardTitle>{godlifeprogress !== null ? `${godlifeprogress}%` : 'Loading...'}</CardTitle>
@@ -164,25 +167,29 @@ export function lookbackDashboardAfterlogin() {
                             <Progress value={godlifeprogress !== null ? godlifeprogress : 0} aria-label={`${godlifeprogress}% progress 향상`} />
                         </CardContent>
                       </Card>
-                      <Card className="flex-1 h-[400px] "> {/* 두 번째 카드가 높이의 절반을 차지 */}
+                      <Card className="flex-1 h-[350px]"> {/* 두 번째 카드가 높이의 절반을 차지 */}
                         <CardHeader>
                             <CardDescription>일정 비율</CardDescription>
                             <CardTitle>Time Utilization: 78%</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <PiechartcustomChart className="aspect-[4/3]" />
+                        <CardContent className="flex items-center justify-center h-full p-0 overflow-hidden">
+                          <div className="w-full h-full max-h-[90%] flex items-center justify-center"> {/* 차트 크기 제어 */}
+                            <PiechartcustomChart className="aspect-[4/3] w-[100%] h-auto" />
+                          </div>
                         </CardContent>
                     </Card>
                     </div>
-                    <Card className = "h-[600px]">
+                    <Card className = "h-[550px]">
                         <CardHeader>
                             <CardDescription>Tasks Completed</CardDescription>
                         <CardTitle>142</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <LinechartChart className="aspect-[4/3]" />
+                        <CardContent className="flex items-center justify-center h-full p-4">
+                            <LinechartChart className="w-full h-full" />
                         </CardContent>
                     </Card>
+                  </div>
+                  <div className="grid grid-cols-2 gap-6">
                     <Card>
                         <CardHeader>
                             <CardDescription>Event Types</CardDescription>
@@ -194,10 +201,23 @@ export function lookbackDashboardAfterlogin() {
                             </div>
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <BarchartCustomChart className="aspect-[4/3]" />
+                        <CardContent className="flex items-center justify-center h-full p-4">
+                            <BarchartCustomChart className="w-full h-full" />
                         </CardContent>
                     </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardDescription>하나 더 넣으면 참 좋을텐데..</CardDescription>
+                            <CardTitle>
+                            <div className="hidden">
+                            </div>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                        </CardContent>
+                    </Card>
+                  </div>
+                  <div className="grid grid-cols-[3fr_2fr] gap-6">
                     <CalendarEventVisualization /> {/* CalendarEventVisualization를 컴포넌트로 사용 */}
                     <ChronotypeAnalysis/> {/* chronotype-analysis를 컴포넌트로 사용 */}
                   </div>

@@ -67,6 +67,9 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out"
       },
+      gridTemplateColumns: {
+        '1-2': '1fr 2fr',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
