@@ -1,8 +1,8 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import ImgSparrow from '@/public/sparrow_transparent.png';
-import ImgOwl from '@/public/owl_transparent.png';
+import ImgSparrow from '@/public/참새ㅐ.png';
+import ImgOwl from '@/public/올빼미ㅣ.png';
 import Image from "next/image";
 
 interface ChronotypeAnalysisProps {
@@ -35,7 +35,7 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle> 이하윤님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요 </CardTitle>
-        <CardDescription>매일 활동 시간</CardDescription>
+        <CardDescription>주 활동 유형</CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center p-6">
         <div className="relative w-72 h-40">
@@ -48,18 +48,23 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
             style={{
               width: !isEveningType ? '200px' : '120px', // 아침형일 때 크기 30% 증가
               height: !isEveningType ? '200px' : '120px',
+              // transform: !isEveningType ? 'scale(1.3)' : 'scale(1)',
               boxShadow: !isEveningType
                 ? '0 10px 25px rgba(59, 130, 246, 0.5)'
                 : '0 5px 15px rgba(59, 130, 246, 0.3)',
             }}
           >
-            <span className="text-sm font-medium z-10 relative">아침형 인간</span>
+            <span className={`z-10 relative transition-transform duration-300 ${
+      !isEveningType ? 'text-xl font-bold opacity-100' : 'text-sm font-medium opacity-70'
+    }`}>아침형 인간</span>
             <Image
               src={ImgSparrow}
               alt="Morning person"
-              width={70}
-              height={70}
-              className="opacity-70"
+              width={!isEveningType ? 100 : 70} // 이미지 크기 조정
+              height={!isEveningType ? 100 : 70}
+              className={`transition-all duration-300 ${
+                !isEveningType ? 'opacity-100 filter-none' : 'opacity-70 filter-none'
+              }`}
             />
           </div>
           
@@ -72,18 +77,23 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
             style={{
               width: isEveningType ? '200px' : '120px', // 저녁형일 때 크기 30% 증가
               height: isEveningType ? '200px' : '120px',
+              // transform: isEveningType ? 'scale(1.3)' : 'scale(1)',
               boxShadow: isEveningType
                 ? '0 10px 25px rgba(147, 51, 234, 0.5)'
                 : '0 5px 15px rgba(147, 51, 234, 0.3)',
             }}
           >
-            <span className="text-sm font-medium z-10 relative">저녁형 인간</span>
+            <span className={`z-10 relative font-medium transition-transform duration-300 ${
+      isEveningType ? 'text-xl font-bold opacity-100' : 'text-sm font-medium opacity-70'
+    }`}>저녁형 인간</span>
             <Image
               src={ImgOwl}
               alt="Evening person"
-              width={70}
-              height={70}
-              className="opacity-70"
+              width={isEveningType ? 100 : 70} // 이미지 크기 조정
+              height={isEveningType ? 100 : 70}
+              className={`transition-all duration-300 ${
+                isEveningType ? 'opacity-100 filter-none' : 'opacity-70 filter-none'
+              }`}
             />
           </div>
         </div>
