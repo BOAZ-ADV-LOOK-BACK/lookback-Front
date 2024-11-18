@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from 'react'
 
@@ -17,14 +17,15 @@ import UpcomingSchedule from "@/components/component/Upcoming_schedule"
 import { GodLifeIndex } from "@/components/component/GodLifeIndex"
 import { CalendarEventVisualization } from "@/components/component/active-time"
 import { ChronotypeAnalysis } from "@/components/component/chronotype-analysis"
-
-
+import { useRouter } from "next/compat/router";
+import DashboardCalendar from "@/components/component/dashboard-calendar"
 export function lookbackDashboardAfterlogin() {
     const [godlifeprogress, setProgress] = useState<number | null>(null)
 
     const handleProgress = (godlifeprogress: number | null) => {
         setProgress(godlifeprogress)
     }
+    const router = useRouter();
 
     return (
       <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
@@ -63,7 +64,7 @@ export function lookbackDashboardAfterlogin() {
                     Performance
                 </Link>
                 <Link
-                    href="#"
+                    href="/userprofile"
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                     prefetch={false}
                 >
@@ -114,7 +115,7 @@ export function lookbackDashboardAfterlogin() {
                 <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem><Link href="/userprofile">Settings</Link></DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Logout</DropdownMenuItem>
@@ -154,10 +155,11 @@ export function lookbackDashboardAfterlogin() {
                 <div className="grid gap-6 w-full max-w-screen-xl mx-auto">
                   <div className="grid gap-6 w-full"
                        style={{ display: "grid",
-                        gridTemplateColumns: "minmax(200px, 2fr) 3fr",
+                        gridTemplateColumns: "minmax(200px, 3fr) 2fr",
                        }}> {/* 열 gap = 6, 행 gap = 4 */}
+                    <DashboardCalendar />
                     <GodLifeIndex onProgress={handleProgress} />
-                    <div className="flex flex-col gap-4 h-[550px]"> {/* 세로로 두 개의 카드 배치, 총 높이 400px */}
+                    <div className="flex flex-col gap-4 h-[600px]"> {/* 세로로 두 개의 카드 배치, 총 높이 400px */}
                       <Card className="flex-1 h-[200px]"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
                         <CardHeader>
                             <CardDescription>지난 주 보다 14.8시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
@@ -167,29 +169,29 @@ export function lookbackDashboardAfterlogin() {
                             <Progress value={godlifeprogress !== null ? godlifeprogress : 0} aria-label={`${godlifeprogress}% progress 향상`} />
                         </CardContent>
                       </Card>
-                      <Card className="flex-1 h-[350px]"> {/* 두 번째 카드가 높이의 절반을 차지 */}
+                      <Card className="flex-1 h-[400px]"> {/* 두 번째 카드가 높이의 절반을 차지 */}
                         <CardHeader>
-                            <CardDescription>일정 비율</CardDescription>
-                            <CardTitle>Time Utilization: 78%</CardTitle>
+                            <CardTitle>내가 가장 많이 수행한 카테고리는?</CardTitle>
+                            <CardDescription>일정 카테고리 비율</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex items-center justify-center h-full p-0 overflow-hidden">
-                          <div className="w-full h-full max-h-[90%] flex items-center justify-center"> {/* 차트 크기 제어 */}
+                        <CardContent className="flex items-center justify-center p-0 overflow-hidden">
+                          <div className="w-full h-full max-h-[100%] flex items-center justify-center translate-y-[-5%]"> {/* 차트 크기 제어 */}
                             <PiechartcustomChart className="aspect-[4/3] w-[100%] h-auto" />
                           </div>
                         </CardContent>
-                    </Card>
+                      </Card>
                     </div>
-                    <Card className = "h-[550px]">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <Card>
                         <CardHeader>
-                            <CardDescription>Tasks Completed</CardDescription>
-                        <CardTitle>142</CardTitle>
+                          <CardTitle>이번 주 이하윤님의 활동</CardTitle>
+                          <CardDescription>Tasks Completed</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex items-center justify-center h-full p-4">
+                        <CardContent className="flex items-center justify-center h-full p-1">
                             <LinechartChart className="w-full h-full" />
                         </CardContent>
                     </Card>
-                  </div>
-                  <div className="grid grid-cols-2 gap-6">
                     <Card>
                         <CardHeader>
                             <CardDescription>Event Types</CardDescription>
@@ -203,17 +205,6 @@ export function lookbackDashboardAfterlogin() {
                         </CardHeader>
                         <CardContent className="flex items-center justify-center h-full p-4">
                             <BarchartCustomChart className="w-full h-full" />
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                            <CardDescription>하나 더 넣으면 참 좋을텐데..</CardDescription>
-                            <CardTitle>
-                            <div className="hidden">
-                            </div>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
                         </CardContent>
                     </Card>
                   </div>
@@ -277,29 +268,31 @@ export function lookbackDashboardAfterlogin() {
         <ResponsiveLine
           data={[
             {
-              id: "Desktop",
+              id: "이번 주",
               data: [
-                { x: "Jan", y: 43 },
-                { x: "Feb", y: 137 },
-                { x: "Mar", y: 61 },
-                { x: "Apr", y: 145 },
-                { x: "May", y: 26 },
-                { x: "Jun", y: 154 },
+                { x: "Mon", y: 43 },
+                { x: "Tue", y: 137 },
+                { x: "Wed", y: 61 },
+                { x: "Thu", y: 145 },
+                { x: "Fri", y: 26 },
+                { x: "Sat", y: 154 },
+                { x: "Sun", y: 104 }
               ],
             },
             {
-              id: "Mobile",
+              id: "지난 주",
               data: [
-                { x: "Jan", y: 60 },
-                { x: "Feb", y: 48 },
-                { x: "Mar", y: 177 },
-                { x: "Apr", y: 78 },
-                { x: "May", y: 96 },
-                { x: "Jun", y: 204 },
+                { x: "Mon", y: 60 },
+                { x: "Tue", y: 48 },
+                { x: "Wed", y: 177 },
+                { x: "Thu", y: 78 },
+                { x: "Fri", y: 96 },
+                { x: "Sat", y: 204 },
+                { x: "Sun", y: 30 }
               ],
             },
           ]}
-          margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
+          margin={{ top: 10, right: 10, bottom: 60, left: 40 }}
           xScale={{
             type: "point",
           }}
@@ -338,6 +331,30 @@ export function lookbackDashboardAfterlogin() {
               },
             },
           }}
+          legends={[
+            {
+              anchor: "bottom", // 범례 위치 (하단)
+            direction: "row", // 범례 방향 (가로)
+            justify: false,
+            translateX: 0, // X축 이동량
+            translateY: 60, // Y축 이동량
+            itemsSpacing: 10, // 범례 항목 간 간격
+            itemWidth: 80, // 범례 항목 너비
+            itemHeight: 20, // 범례 항목 높이
+            itemDirection: "left-to-right", // 아이콘과 텍스트의 정렬 방향
+            symbolSize: 12, // 범례 아이콘 크기
+            symbolShape: "circle", // 범례 아이콘 모양
+            itemTextColor: "#000", // 텍스트 색상
+            effects: [
+              {
+                on: "hover", // 호버 효과
+                style: {
+                  itemTextColor: "#555", // 호버 시 텍스트 색상
+                },
+              },
+            ],
+            }
+          ]}
           role="application"
         />
       </div>

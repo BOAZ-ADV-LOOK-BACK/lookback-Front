@@ -34,7 +34,7 @@ export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
     return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle> 이하윤님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요 </CardTitle>
+        <CardTitle> 이하윤님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요{isEveningType ? '🌙' : '☀️'}</CardTitle>
         <CardDescription>주 활동 유형</CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center p-6">

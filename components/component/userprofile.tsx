@@ -54,7 +54,7 @@ export function UserProfile() {
 
   return (
     <div className="container mx-auto p-4">
-      <Link href="/dashboard">
+      <Link href="/dashboard-afterlogin">
         <Button className="mb-4">메인 페이지로 돌아가기</Button>
       </Link>
       <Card className="w-full max-w-2xl mx-auto">

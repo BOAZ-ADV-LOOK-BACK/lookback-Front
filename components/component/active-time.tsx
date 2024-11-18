@@ -84,7 +84,7 @@ export function CalendarEventVisualization() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>나는 주로 언제 활동할까?</CardTitle>
+        <CardTitle>나는 주로 언제 활동할까?🏃🏻‍♂️</CardTitle>
         <CardDescription>주 활동 시간대</CardDescription>
       </CardHeader>
       <CardContent>
@@ -133,7 +133,7 @@ export function CalendarEventVisualization() {
                     { x: event.day, y: event.endTime }
                   ]}
                   stroke={isBeforeNoon ? "#8884d8" : "#ff4d4d"}
-                  strokeWidth={7}
+                  strokeWidth={3}
                 />
               );
             })}
