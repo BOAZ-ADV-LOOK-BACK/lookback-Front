@@ -34,11 +34,12 @@ export const metadata: Metadata = {
 };
 
 if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-  throw new Error('Missing Google Client ID');
-  // console.log('Missing Google Client ID'); // 로컬에서 작업하기 위해서는 error throw가 아니라 console.log 처리
+  // throw new Error('Missing Google Client ID');
+  console.log('Missing Google Client ID'); // 로컬에서 작업하기 위해서는 error throw가 아니라 console.log 처리
 }
 
-const clientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+// const clientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+const clientId: string = "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";
 
 export default function Layout({
   children
