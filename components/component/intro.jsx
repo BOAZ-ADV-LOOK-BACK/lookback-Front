@@ -18,6 +18,16 @@ const GoogleLoginBtn = () => {
       onSuccess: async ({ code }) => {
           setIsLoading(true);
           try {
+             // code는 authorization_code 이다 (access token이 아님)
+             // request param- code
+             // response body :
+              //  "success": True,
+              //     "isNewUser": is_new_user,
+              //     "user": {
+              //         "email": user.email,
+              //         "name": user.full_name,
+              //         "picture": user_info.get("picture", "")
+              //     }
               const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
               console.log("Login success:", response.data);
 
