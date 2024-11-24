@@ -42,7 +42,7 @@ const UpcomingSchedule: React.FC = () => {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[180px]">Time</TableHead>
+                                <TableHead className="w-[300px]">Time</TableHead>
                                 <TableHead>Event Name</TableHead>
                                 <TableHead>Category</TableHead>
                             </TableRow>
