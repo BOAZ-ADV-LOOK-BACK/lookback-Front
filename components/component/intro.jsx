@@ -16,36 +16,28 @@ const GoogleLoginBtn = () => {
       scope: 'https://www.googleapis.com/auth/userinfo.email openid',
       flow: "auth-code",
       onSuccess: async ({ code }) => {
-          setIsLoading(true);
-          try {
-             // code는 authorization_code 이다 (access token이 아님)
-             // request param- code
-             // response body :
-              //  "success": True,
-              //     "isNewUser": is_new_user,
-              //     "user": {
-              //         "email": user.email,
-              //         "name": user.full_name,
-              //         "picture": user_info.get("picture", "")
-              //     }
-              const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
-              console.log("Login success:", response.data);
-
-              const userEmail = response.data.user.email;
-
-              if (response.data.isNewUser) {
-                  // 새로운 사용자는 추가 정보 입력 페이지로 이동하면서 이메일 전달
-                  router.replace(`/additional-info?email=${userEmail}`);
-              } else {
-                  // 기존 사용자는 대시보드로
-                  router.replace('/dashboard-afterlogin');
-              }
-          } catch (error) {
-              console.error("Login error:", error);
-              setIsLoading(false);
-              router.replace('/');
-          }
-      },
+        setIsLoading(true);
+        try {
+            const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
+            console.log("Login success:", response.data);
+    
+            const userEmail = response.data.user.email;
+            // 세션에 이메일 저장
+            sessionStorage.setItem('userEmail', userEmail);
+    
+            if (response.data.isNewUser) {
+                // 새로운 사용자는 추가 정보 입력 페이지로
+                router.replace(`/additional-info?email=${userEmail}`);
+            } else {
+                // 기존 사용자는 대시보드로
+                router.replace('/dashboard-afterlogin');
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            setIsLoading(false);
+            router.replace('/');
+        }
+    },
       onError: (errorResponse) => {
           console.error("Google login error:", errorResponse);
           setIsLoading(false);

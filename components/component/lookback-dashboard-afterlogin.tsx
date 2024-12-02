@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'  // useEffect 추가
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -20,64 +20,73 @@ import { ChronotypeAnalysis } from "@/components/component/chronotype-analysis"
 import { useRouter } from "next/compat/router";
 import DashboardCalendar from "@/components/component/dashboard-calendar"
 export function lookbackDashboardAfterlogin() {
-    const [godlifeprogress, setProgress] = useState<number | null>(null)
+  const [godlifeprogress, setProgress] = useState<number | null>(null)
+  const [userEmail, setUserEmail] = useState('');
+  const router = useRouter();
+  
 
-    const handleProgress = (godlifeprogress: number | null) => {
-        setProgress(godlifeprogress)
+  useEffect(() => {
+    const email = sessionStorage.getItem('userEmail');
+    if (email) {
+      setUserEmail(email);
     }
-    const router = useRouter();
+  }, []);
 
-    return (
-      <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
-        <div className="hidden border-r bg-muted/40 lg:block">
-          <div className="flex h-full max-h-screen flex-col gap-2">
-            <div className="flex h-[60px] items-center border-b px-6">
-                <Link href="#" className="flex items-center gap-2 font-semibold" prefetch={false}>
-                <CalendarClockIcon className="h-6 w-6" />
-                <span className="">Look Back your history</span>
-                </Link>
-            </div>
-            <div className="flex-1 overflow-auto py-2">
-                <nav className="grid items-start px-4 text-sm font-medium">
-                <Link
-                    href="#"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                    prefetch={false}
-                >
-                    <HomeIcon className="h-4 w-4" />
-                    Dashboard
-                </Link>
-                <Link
-                    href="#"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                    prefetch={false}
-                >
-                    <CalendarIcon className="h-4 w-4" />
-                    Goals
-                </Link>
-                <Link
-                    href="#"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                    prefetch={false}
-                >
-                    <BarChartIcon className="h-4 w-4" />
-                    Performance
-                </Link>
-                <Link
-                    href="/userprofile"
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                    prefetch={false}
-                >
-                    <SettingsIcon className="h-4 w-4" />
-                    Settings
-                </Link>
-                </nav>
-            </div>
+  const handleProgress = (godlifeprogress: number | null) => {
+    setProgress(godlifeprogress)
+  }
+
+  return (
+    <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
+      <div className="hidden border-r bg-muted/40 lg:block">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+          <div className="flex h-[60px] items-center border-b px-6">
+            <Link href="#" className="flex items-center gap-2 font-semibold" prefetch={false}>
+              <CalendarClockIcon className="h-6 w-6" />
+              <span className="">Look Back your history</span>
+            </Link>
+          </div>
+          <div className="flex-1 overflow-auto py-2">
+            <nav className="grid items-start px-4 text-sm font-medium">
+              <Link
+                href="#"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                prefetch={false}
+              >
+                <HomeIcon className="h-4 w-4" />
+                Dashboard
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                prefetch={false}
+              >
+                <CalendarIcon className="h-4 w-4" />
+                Goals
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                prefetch={false}
+              >
+                <BarChartIcon className="h-4 w-4" />
+                Performance
+              </Link>
+              <Link
+                href={`/userprofile?email=${userEmail}`}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                prefetch={false}
+              >
+                <SettingsIcon className="h-4 w-4" />
+                Settings
+              </Link>
+            </nav>
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-col">
-            <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6">
+      <div className="flex flex-col">
+        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6">
             <Link href="#" className="lg:hidden" prefetch={false}>
                 <CalendarClockIcon className="h-6 w-6" />
                 <span className="sr-only">Home</span>
@@ -99,29 +108,31 @@ export function lookbackDashboardAfterlogin() {
                 <span className="sr-only">Toggle notifications</span>
             </Button>
             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full border w-8 h-8">
-                    <img
-                    src="/placeholder.svg"
-                    width="32"
-                    height="32"
-                    className="rounded-full"
-                    alt="Avatar"
-                    style={{ aspectRatio: "32/32", objectFit: "cover" }}
-                    />
-                    <span className="sr-only">Toggle user menu</span>
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem><Link href="/userprofile">Settings</Link></DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-            </header>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full border w-8 h-8">
+                <img
+                  src="/placeholder.svg"
+                  width="32"
+                  height="32"
+                  className="rounded-full"
+                  alt="Avatar"
+                  style={{ aspectRatio: "32/32", objectFit: "cover" }}
+                />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link href={`/userprofile?email=${userEmail}`}>Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
             <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
                 <div className="flex items-center gap-4">
                     <h1 className="font-semibold text-lg md:text-xl">Dashboard</h1>
