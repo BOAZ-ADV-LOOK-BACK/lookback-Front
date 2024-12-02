@@ -10,12 +10,11 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLab
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardHeader, CardDescription, CardTitle, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import UpcomingSchedule from "@/components/component/charts/Upcoming_schedule"
 
 
 // import charts
-import { GodLifeIndex } from "@/components/component/GodLifeIndex"
+import { GodLifeIndex } from "@/components/component/charts/GodLifeIndex"
 import { CalendarEventVisualization } from "@/components/component/charts/active-time"
 import { EventTypesCard } from "@/components/component/charts/EventTypesCard"
 import { ChronotypeAnalysis } from "@/components/component/charts/ChronotypeAnalysis"
@@ -191,17 +190,8 @@ export function lookbackDashboardAfterlogin() {
                         gridTemplateColumns: "minmax(200px, 3fr) 2fr",
                        }}> {/* 열 gap = 6, 행 gap = 4 */}
                     <DashboardCalendar />
-                    <GodLifeIndex onProgress={handleProgress} />
                     <div className="flex flex-col gap-4 h-[600px]"> {/* 세로로 두 개의 카드 배치, 총 높이 400px */}
-                      <Card className="flex-1 h-[200px]"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
-                        <CardHeader>
-                            <CardDescription>지난 주 보다 14.8시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
-                            <CardTitle>{godlifeprogress !== null ? `${godlifeprogress}%` : 'Loading...'}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Progress value={godlifeprogress !== null ? godlifeprogress : 0} aria-label={`${godlifeprogress}% progress 향상`} />
-                        </CardContent>
-                      </Card>
+                      <GodLifeIndex/>
                       <CategoryDistributionCard/>
                     </div>
                   </div>
