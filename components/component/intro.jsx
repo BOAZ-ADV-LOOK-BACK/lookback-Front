@@ -16,6 +16,7 @@ const GoogleLoginBtn = () => {
       scope: 'https://www.googleapis.com/auth/userinfo.email openid',
       flow: "auth-code",
       onSuccess: async ({ code }) => {
+          console.log("Authorization code:", code);
           setIsLoading(true);
           try {
              // code는 authorization_code 이다 (access token이 아님)
