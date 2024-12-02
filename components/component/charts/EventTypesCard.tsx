@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardHeader, CardDescription, CardTitle, CardContent } from "@/components/ui/card";
 import { ChartTooltipContent, ChartTooltip, ChartContainer } from "@/components/ui/chart"
-import { CartesianGrid, XAxis } from "recharts"
+import { CartesianGrid, XAxis, Bar } from "recharts"
 
 import { BarChart } from "recharts"
 
