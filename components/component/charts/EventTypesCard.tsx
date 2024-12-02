@@ -2,6 +2,9 @@
 
 import React from 'react';
 import { Card, CardHeader, CardDescription, CardTitle, CardContent } from "@/components/ui/card";
+import { ChartTooltipContent, ChartTooltip, ChartContainer } from "@/components/ui/chart"
+import { CartesianGrid, XAxis } from "recharts"
+
 import { BarChart } from "recharts"
 
 export function EventTypesCard() {
@@ -10,22 +13,22 @@ export function EventTypesCard() {
       <CardHeader>
         <CardDescription>Event Types</CardDescription>
         <CardTitle>
-          <div className="flex gap-2">
+        <div className="flex gap-2">
             <div className="bg-primary rounded-full w-3 h-3" />
             <div className="bg-secondary rounded-full w-3 h-3" />
             <div className="bg-muted rounded-full w-3 h-3" />
-          </div>
+        </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex items-center justify-center h-full p-4">
-        <BarChart className="w-full h-full" />
-      </CardContent>
-    </Card>
+    <CardContent className="flex items-center justify-center h-full p-4">
+        <BarchartCustomChart className="w-full h-full" />
+    </CardContent>
+</Card>
   );
 }
 
 
-function BarchartCustomChart(props) {
+function BarchartCustomChart(props: any) {
   return (
     <div {...props}>
       <ChartContainer
