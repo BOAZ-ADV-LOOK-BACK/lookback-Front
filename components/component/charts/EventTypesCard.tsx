@@ -8,6 +8,14 @@ import { CartesianGrid, XAxis, Bar } from "recharts"
 import { BarChart } from "recharts"
 
 export function EventTypesCard() {
+  const data=[
+    { month: "January", desktop: 186 },
+    { month: "February", desktop: 305 },
+    { month: "March", desktop: 237 },
+    { month: "April", desktop: 73 },
+    { month: "May", desktop: 209 },
+    { month: "June", desktop: 214 },
+  ];
   return (
     <Card>
       <CardHeader>
@@ -21,14 +29,14 @@ export function EventTypesCard() {
         </CardTitle>
       </CardHeader>
     <CardContent className="flex items-center justify-center h-full p-4">
-        <BarchartCustomChart className="w-full h-full" />
+        <BarchartCustomChart data={data} className="w-full h-full" />
     </CardContent>
 </Card>
   );
 }
 
 
-function BarchartCustomChart(props: any) {
+function BarchartCustomChart(props: any, data: any) {
   return (
     <div {...props}>
       <ChartContainer
@@ -42,14 +50,7 @@ function BarchartCustomChart(props: any) {
       >
         <BarChart
           accessibilityLayer
-          data={[
-            { month: "January", desktop: 186 },
-            { month: "February", desktop: 305 },
-            { month: "March", desktop: 237 },
-            { month: "April", desktop: 73 },
-            { month: "May", desktop: 209 },
-            { month: "June", desktop: 214 },
-          ]}
+          data={data}
         >
           <CartesianGrid vertical={false} />
           <XAxis
