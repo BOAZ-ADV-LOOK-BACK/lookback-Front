@@ -48,7 +48,7 @@ export function UserProfile() {
   const fetchUserProfile = async (email: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`https://api.look-back.site/api/v1/get-user-info?email=${email}`);
+      const response = await fetch(`https://api.look-back.site/api/v1/users/get-user-info?email=${email}`);
       if (!response.ok) throw new Error('프로필을 불러오는데 실패했습니다.');
 
       const data = await response.json();
@@ -92,7 +92,7 @@ export function UserProfile() {
     setIsLoading(true);
   
     try {
-      const response = await fetch('https://api.look-back.site/api/v1/update-user-info', {
+      const response = await fetch('https://api.look-back.site/api/v1/users/update-user-info', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,15 +147,40 @@ export function UserProfile() {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="birthDate">생년월일</Label>
-                <Input id="birthDate" value={userInfo.birthDate} disabled />
+                <Input
+                  id="birthDate"
+                  type="date"
+                  value={userInfo.birthDate}
+                  onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                  disabled={!isEditing}
+                />
               </div>
+
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="gender">성별</Label>
-                <Input id="gender" value={userInfo.gender} disabled />
+                <Select
+                  value={userInfo.gender}
+                  onValueChange={(value) => handleInputChange('gender', value)}
+                  disabled={!isEditing}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="성별을 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="남성">남성</SelectItem>
+                    <SelectItem value="여성">여성</SelectItem>
+                    <SelectItem value="기타">기타</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="occupation">직업</Label>
-                <Select onValueChange={(value) => handleInputChange('occupation', value)}>
+                <Select
+                  value={userInfo.occupation}
+                  onValueChange={(value) => handleInputChange('occupation', value)}
+                  disabled={!isEditing}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="직업을 선택하세요" />
                   </SelectTrigger>
@@ -165,7 +190,7 @@ export function UserProfile() {
                     ))}
                   </SelectContent>
                 </Select>
-                {userInfo.occupation === '기타' && (
+                {userInfo.occupation === '기타' && isEditing && (
                   <Input
                     name="otherOccupation"
                     value={userInfo.otherOccupation || ''}
@@ -178,7 +203,11 @@ export function UserProfile() {
 
               <div className="space-y-2">
                 <Label htmlFor="interest">종사 분야</Label>
-                <Select onValueChange={(value) => handleInputChange('interest', value)}>
+                <Select
+                  value={userInfo.interest}
+                  onValueChange={(value) => handleInputChange('interest', value)}
+                  disabled={!isEditing}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="종사 분야를 선택하세요" />
                   </SelectTrigger>
@@ -188,7 +217,7 @@ export function UserProfile() {
                     ))}
                   </SelectContent>
                 </Select>
-                {userInfo.interest === '기타' && (
+                {userInfo.interest === '기타' && isEditing && (
                   <Input
                     name="otherInterest"
                     value={userInfo.otherInterest || ''}
@@ -201,7 +230,11 @@ export function UserProfile() {
 
               <div className="space-y-2">
                 <Label htmlFor="hobby">취미</Label>
-                <Select onValueChange={(value) => handleInputChange('hobby', value)}>
+                <Select
+                  value={userInfo.hobby}
+                  onValueChange={(value) => handleInputChange('hobby', value)}
+                  disabled={!isEditing}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="취미를 선택하세요" />
                   </SelectTrigger>
@@ -211,7 +244,7 @@ export function UserProfile() {
                     ))}
                   </SelectContent>
                 </Select>
-                {userInfo.hobby === '기타' && (
+                {userInfo.hobby === '기타' && isEditing && (
                   <Input
                     name="otherHobby"
                     value={userInfo.otherHobby || ''}

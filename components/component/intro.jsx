@@ -13,55 +13,34 @@ const GoogleLoginBtn = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const googleSocialLogin = useGoogleLogin({
-      // 캘린더 접근 권한 추가
-      scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar.readonly openid',
-      flow: "auth-code",
-      onSuccess: async ({ code }) => {
-        setIsLoading(true);
-        try {
-            // 1. 로그인 요청
-            const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
-            console.log("Login success:", response.data);
-    
-            // 2. JWT 토큰 저장
-            const jwtToken = response.data.access_token;
-            // JWT 토큰을 안전하게 저장 (httpOnly 쿠키로 저장하거나 상태 관리 라이브러리 사용)
-            localStorage.setItem('access_token', jwtToken);
-
-            // 3. 캘린더 동기화 요청
-            try {
-                await axios.post(
-                    "https://api.look-back.site/api/v1/calendar/sync-calendar",
-                    {},
-                    {
-                        headers: {
-                            Authorization: `Bearer ${jwtToken}`
-                        }
-                    }
-                );
-            } catch (syncError) {
-                console.error("Calendar sync failed:", syncError);
-                // 동기화 실패해도 로그인 프로세스는 계속 진행
-            }
-
-            // 4. 페이지 이동
-            if (response.data.isNewUser) {
-                router.replace('/additional-info');  // URL에서 email 파라미터 제거
-            } else {
-                router.replace('/dashboard-afterlogin');
-            }
-        } catch (error) {
-            console.error("Login error:", error);
-            setIsLoading(false);
-            router.replace('/');
-        }
-    },
-      onError: (errorResponse) => {
-          console.error("Google login error:", errorResponse);
-          setIsLoading(false);
-          router.replace('/');
-      }
-  });
+    // 캘린더 접근 권한 추가
+    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar.readonly openid',
+    flow: "auth-code",
+    onSuccess: async ({ code }) => {
+      const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
+      const jwtToken = response.data.access_token;
+  
+      localStorage.setItem('access_token', jwtToken);
+      console.log("Access Token 저장 성공:", localStorage.getItem('access_token')); 
+  
+      // 로그인 성공 후 바로 페이지 이동
+      router.replace('/dashboard-afterlogin');
+  
+      // 비동기 데이터 동기화 호출
+      axios.post(
+          "https://api.look-back.site/api/v1/calendar/sync-calendar",
+          {}, 
+          { headers: { Authorization: `Bearer ${jwtToken}` } }
+      ).catch(error => {
+          console.error("Calendar sync failed:", error);
+      });
+  },
+    onError: (errorResponse) => {
+        console.error("Google login error:", errorResponse);
+        setIsLoading(false);
+        router.replace('/');
+    }
+});
 
   return (
     <Button 
