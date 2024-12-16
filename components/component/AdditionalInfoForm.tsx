@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Loader2 } from "lucide-react";
+import axios from 'axios';
 
 const genderOptions = ['남성', '여성', '아직모름'];
 const jobOptions = ['학생', '회사원', '자영업', '전문직', '기타'];
@@ -14,7 +15,6 @@ const hobbyOptions = ['운동', '독서', '여행', '음악', '영화', '기타'
 
 export default function AdditionalInfoForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -28,11 +28,42 @@ export default function AdditionalInfoForm() {
   });
 
   useEffect(() => {
-    const email = searchParams.get("email");
-    if (email) {
-      setFormData(prev => ({ ...prev, email }));
+    const token = localStorage.getItem('access_token');
+    console.log("토큰 확인:", token);
+    
+    if (token) {
+        console.log("이메일 정보 요청 시작");
+        axios.get('https://api.look-back.site/api/v1/users/me', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log("전체 응답 데이터:", response.data);
+            if (response.data.email) {
+                console.log("이메일 수신 완료:", response.data.email);
+                setFormData(prev => {
+                    const newData = {
+                        ...prev,
+                        email: response.data.email
+                    };
+                    console.log("업데이트된 formData:", newData);
+                    return newData;
+                });
+            } else {
+                console.error("응답에 이메일이 없음:", response.data);
+                router.push('/');
+            }
+        })
+        .catch(error => {
+            console.error("이메일 정보 요청 실패:", error.response?.data || error.message);
+            router.push('/');
+        });
+    } else {
+        console.error("토큰이 없음");
+        router.push('/');
     }
-  }, [searchParams]);
+  }, [router]);
 
   const handleChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -44,29 +75,43 @@ export default function AdditionalInfoForm() {
     setError('');
 
     try {
-      const response = await fetch('https://api.look-back.site/api/v1/update-user-info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('토큰이 없습니다');
+      }
+
+      console.log("제출할 데이터:", {
+        email: formData.email,  // 이메일도 함께 전송
+        birth: formData.birth,
+        gender: formData.gender,
+        job: formData.job === '기타' ? formData.otherJob : formData.job,
+        hobby: formData.hobby === '기타' ? formData.otherHobby : formData.hobby,
+      });
+
+      const response = await axios.post(
+        'https://api.look-back.site/api/v1/users/update-user-info',
+        {
+          email: formData.email,  // 이메일도 함께 전송
           birth: formData.birth,
           gender: formData.gender,
           job: formData.job === '기타' ? formData.otherJob : formData.job,
           hobby: formData.hobby === '기타' ? formData.otherHobby : formData.hobby,
-        }),
-      });
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
-      if (response.ok) {
-        setTimeout(() => {
-          router.push('/dashboard-afterlogin');
-        }, 500);
-      } else {
-        const data = await response.json();
-        setError(data.detail || '정보 저장에 실패했습니다.');
+      console.log("서버 응답:", response.data);
+
+      if (response.status === 200) {
+        router.push('/dashboard-afterlogin');
       }
     } catch (error) {
-      setError('서버 연결에 실패했습니다. 다시 시도해주세요.');
       console.error('Error saving user info:', error);
+      setError('정보 저장에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
