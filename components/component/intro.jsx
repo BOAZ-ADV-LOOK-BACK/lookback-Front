@@ -13,23 +13,41 @@ const GoogleLoginBtn = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const googleSocialLogin = useGoogleLogin({
-      scope: 'https://www.googleapis.com/auth/userinfo.email openid',
+      // 캘린더 접근 권한 추가
+      scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar.readonly openid',
       flow: "auth-code",
       onSuccess: async ({ code }) => {
         setIsLoading(true);
         try {
+            // 1. 로그인 요청
             const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
             console.log("Login success:", response.data);
     
-            const userEmail = response.data.user.email;
-            // 세션에 이메일 저장
-            sessionStorage.setItem('userEmail', userEmail);
-    
+            // 2. JWT 토큰 저장
+            const jwtToken = response.data.access_token;
+            // JWT 토큰을 안전하게 저장 (httpOnly 쿠키로 저장하거나 상태 관리 라이브러리 사용)
+            localStorage.setItem('access_token', jwtToken);
+
+            // 3. 캘린더 동기화 요청
+            try {
+                await axios.post(
+                    "https://api.look-back.site/api/v1/calendar/sync-calendar",
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${jwtToken}`
+                        }
+                    }
+                );
+            } catch (syncError) {
+                console.error("Calendar sync failed:", syncError);
+                // 동기화 실패해도 로그인 프로세스는 계속 진행
+            }
+
+            // 4. 페이지 이동
             if (response.data.isNewUser) {
-                // 새로운 사용자는 추가 정보 입력 페이지로
-                router.replace(`/additional-info?email=${userEmail}`);
+                router.replace('/additional-info');  // URL에서 email 파라미터 제거
             } else {
-                // 기존 사용자는 대시보드로
                 router.replace('/dashboard-afterlogin');
             }
         } catch (error) {
@@ -49,9 +67,10 @@ const GoogleLoginBtn = () => {
     <Button 
       onClick={googleSocialLogin}
       size="lg"
+      disabled={isLoading}
       className="w-full max-w-md bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-lg"
     >
-      Google로 로그인 <ChevronRight className="ml-2 h-5 w-5" />
+      {isLoading ? "로그인 중..." : "Google로 로그인"} <ChevronRight className="ml-2 h-5 w-5" />
     </Button>
   );
 };
