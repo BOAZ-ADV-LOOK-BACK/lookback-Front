@@ -37,12 +37,14 @@ import { CalendarIcon } from "@/components/component/icon/CalendarIcon";
 import { HomeIcon } from "@/components/component/icon/HomeIcon";
 import { SearchIcon } from "@/components/component/icon/SearchIcon";
 import { SettingsIcon } from "@/components/component/icon/SettingsIcon";
+import { SyncIcon } from "@/components/component/icon/SyncIcon";
 import axios from "axios";
 import UpcomingSchedule from "./charts/Upcoming_schedule";
 
 export function lookbackDashboardAfterlogin() {
   const [godlifeprogress, setProgress] = useState<number | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  const [isSyncing, setIsSyncing] = useState(false);
   const router = useRouter();
 
   // 사용자 이메일 가져오기
@@ -74,6 +76,27 @@ export function lookbackDashboardAfterlogin() {
 
   const handleProgress = (godlifeprogress: number | null) => {
     setProgress(godlifeprogress);
+  };
+
+  const handleCalendarSync = async () => {
+    if (isSyncing) return;
+
+    setIsSyncing(true);
+    const token = localStorage.getItem("access_token");
+
+    try {
+      await axios.post(
+        "https://api.look-back.site/api/v1/calendar/sync-events",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("캘린더 업데이트 완료!"); // 간단한 알림으로 대체
+    } catch (error) {
+      console.error("Calendar sync failed:", error);
+      alert("Failed to sync calendar"); // 간단한 알림으로 대체
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   return (
@@ -124,6 +147,15 @@ export function lookbackDashboardAfterlogin() {
                 <SettingsIcon className="h-4 w-4" />
                 Settings
               </Link>
+              {/* Sync 버튼 추가 */}
+              <button
+                onClick={handleCalendarSync}
+                disabled={isSyncing}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary disabled:opacity-50"
+              >
+                <SyncIcon className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                {isSyncing ? 'Syncing...' : 'Sync Calendar'}
+              </button>
             </nav>
           </div>
         </div>
