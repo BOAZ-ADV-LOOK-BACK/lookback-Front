@@ -117,7 +117,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gray-900">
+    <div className="min-h-screen relative overflow-hidden bg-gray-900 w-full">
       {/* 배경 애니메이션 */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(64,64,255,0.2),rgba(0,0,0,0))]" />
@@ -132,10 +132,10 @@ export default function LandingPage() {
       </div>
 
       {/* 메인 콘텐츠 */}
-      <div className="relative z-10">
+      <div className="relative z-10 w-full">
         {/* 네비게이션 */}
         <header className="fixed w-full z-50 backdrop-blur-md bg-white/10">
-          <nav className="max-w-7xl mx-auto px-6 py-4">
+          <nav className="w-full px-6 py-4">
             <div className="flex items-center space-x-3">
               <CalendarDays className="h-8 w-8 text-blue-400" />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
@@ -146,8 +146,8 @@ export default function LandingPage() {
         </header>
 
         {/* 히어로 섹션 */}
-        <main className="pt-24">
-          <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+        <main className="pt-24 w-full">
+          <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center w-full">
             <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-black mb-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 과거를 제대로 알면{" "}
@@ -164,7 +164,7 @@ export default function LandingPage() {
             </div>
 
             {/* 기능 카드 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-6 mb-16">
               <div className={`transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                 <div className="p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-lg border border-gray-700 hover:border-blue-500/50 hover:shadow-blue-500/20 hover:shadow-2xl group transition-all duration-300">
                   <div className="relative mb-8">
@@ -207,7 +207,7 @@ export default function LandingPage() {
         </main>
 
         {/* 푸터 */}
-        <footer className="py-8 text-center text-gray-400 backdrop-blur-md bg-gray-900/50">
+        <footer className="py-8 text-center text-gray-400 backdrop-blur-md bg-gray-900/50 w-full">
           <p>&copy; 2024 look-back. All rights reserved.</p>
         </footer>
       </div>
