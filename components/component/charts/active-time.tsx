@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ComposedChart,
   Scatter,
@@ -13,74 +13,73 @@ import {
   Line
 } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import axios from "axios";
 
-// 가상의 이벤트 데이터 (실제로는 Google Calendar API에서 받아온 데이터를 사용해야 합니다)
-const events = [
-  { day: 1, startTime: 9, endTime: 17 },
-  { day: 32, startTime: 10, endTime: 15 },
-  { day: 60, startTime: 14, endTime: 18 },
-  { day: 91, startTime: 8, endTime: 12 },
-  { day: 152, startTime: 13, endTime: 19 },
-  { day: 213, startTime: 11, endTime: 16 },
-  { day: 274, startTime: 9, endTime: 14 },
-  { day: 305, startTime: 10, endTime: 17 },
-  { day: 365, startTime: 8, endTime: 18 }
-];
+export function CalendarEventVisualization() {
+  const [weeklyData, setWeeklyData] = useState({ this_week: [], last_week: [] });
+  const [isLoading, setIsLoading] = useState(true);
 
-// 데이터를 중간 지점 형식으로 변환
-const eventData = events.map((event) => ({
-  day: event.day,
-  midTime: (event.startTime + event.endTime) / 2,
-  startTime: event.startTime,
-  endTime: event.endTime,
-  duration: event.endTime - event.startTime
-}));
+  useEffect(() => {
+    const fetchWeeklyActivityData = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await axios.get(
+          "https://api.look-back.site/api/v1/calendar/weekly-activity",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        if (response.data.success) {
+          setWeeklyData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch weekly activity data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-// 월의 첫 날 계산 (간단한 버전, 윤년은 고려하지 않음)
-const monthStarts = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    fetchWeeklyActivityData();
+  }, []);
 
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="bg-white p-2 border border-gray-300 rounded shadow">
-        <p className="font-bold">Day: {data.day}</p>
-        <p>Start: {data.startTime}:00</p>
-        <p>End: {data.endTime}:00</p>
-        <p>Duration: {data.duration} hours</p>
-      </div>
-    );
-  }
-  return null;
-};
-
-const CustomXAxisTick = ({ x, y, payload }) => {
-  const index = monthStarts.indexOf(payload.value);
-  if (index !== -1) {
+  // X축의 날짜 레이블을 요일로 변경
+  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const CustomXAxisTick = ({ x, y, payload }) => {
     return (
       <g transform={`translate(${x},${y})`}>
         <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={10}>
-          {monthNames[index]}
+          {dayNames[payload.value]}
         </text>
       </g>
     );
-  }
-  return null;
-};
+  };
 
-// 낮/밤 스타일을 적용하는 함수
-const getLineStyle = (midTime) => {
-  if (midTime <= 12) {
-    // 밤 스타일 (차트 아래쪽)
-    return { stroke: "#fff", strokeWidth: 2, strokeDasharray: "5 5" };
-  } else {
-    // 낮 스타일 (차트 위쪽)
-    return { stroke: "#ffae42", strokeWidth: 2 };
-  }
-};
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white p-2 border border-gray-300 rounded shadow">
+          <p className="font-bold">{dayNames[data.day]}</p>
+          <p>Start: {data.startTime}:00</p>
+          <p>End: {data.endTime}:00</p>
+          <p>Duration: {data.duration} hours</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
-export function CalendarEventVisualization() {
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-4xl">
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <p>Loading activity data...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
@@ -93,66 +92,54 @@ export function CalendarEventVisualization() {
             <ComposedChart
               margin={{ top: 20, right: 20, bottom: 20, left: 10 }}
               style={{
-                background: "linear-gradient(to bottom, #ffebcd 50%, #2c3e50)", // 위는 밝은색, 아래는 어두운색
+                background: "linear-gradient(to bottom, #ffebcd 50%, #2c3e50)",
                 borderRadius: "8px"
               }}
             >
               <XAxis
                 type="number"
                 dataKey="day"
-                name="Day"
-                domain={[1, 365]}
-                ticks={monthStarts}
+                domain={[0, 6]}
+                ticks={[0, 1, 2, 3, 4, 5, 6]}
                 tick={<CustomXAxisTick />}
-                axisLine={{ stroke: "#ffffff" }}  // 축 색상
-                tickLine={{ stroke: "#ffffff" }}  // 축의 tick 선 색상
-                tick={{ fill: "#ffffff", fontSize: 10}}        // 글씨 색상
+                axisLine={{ stroke: "#ffffff" }}
+                tickLine={{ stroke: "#ffffff" }}
+                tick={{ fill: "#ffffff", fontSize: 10 }}
               />
               <YAxis
                 type="number"
-                dataKey="midTime"
+                dataKey="startTime"
                 name="Time"
                 domain={[24, 0]}
                 ticks={[0, 6, 12, 18, 24]}
                 tickFormatter={(value) => `${value}:00`}
-                axisLine={{ stroke: "#0000FF" }}  // Y축 색상
-                tickLine={{ stroke: "#0000FF" }}  // Y축의 tick 선 색상
-                tick={{ fill: "#0000FF",fontSize: 10 }}        // Y축 글씨 색상
+                axisLine={{ stroke: "#0000FF" }}
+                tickLine={{ stroke: "#0000FF" }}
+                tick={{ fill: "#0000FF", fontSize: 10 }}
                 reversed
               />
               <ZAxis type="number" dataKey="duration" range={[20, 100]} />
               <Tooltip content={<CustomTooltip />} />
               <ReferenceLine y={12} stroke="#666" strokeDasharray="3 3" />
-              {eventData.map((event, index) => {
-                const isBeforeNoon = event.midTime <=12;
-                return (
+              
+              {/* 이번 주 데이터 */}
+              {weeklyData.this_week.map((event, index) => (
                 <ReferenceLine
-                  key={`line-${index}`}
+                  key={`this-week-${index}`}
                   segment={[
                     { x: event.day, y: event.startTime },
                     { x: event.day, y: event.endTime }
                   ]}
-                  stroke={isBeforeNoon ? "#8884d8" : "#ff4d4d"}
+                  stroke="#ff4d4d"
                   strokeWidth={3}
                 />
-              );
-            })}
+              ))}
               
-              <Scatter 
-                data={eventData}
-                fill="#000000"
-                shape="circle"
-              />
+              {/* 지난 주 데이터 (반투명하게 표시) */}
 
-              <Line
-                type="monotone"
-                data={eventData}
-                dataKey="midTime"
-                stroke="#8884d8"
-                strokeWidth={2}
-                dot={false}
-                connectNulls={true}
-              />
+              {/* 중간선 */}
+              <ReferenceLine y={12} stroke="#666" strokeDasharray="3 3" />
+
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -160,3 +147,5 @@ export function CalendarEventVisualization() {
     </Card>
   );
 }
+
+export default CalendarEventVisualization;
