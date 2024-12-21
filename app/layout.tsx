@@ -69,3 +69,158 @@ export default function Layout({
     </html>
   );
 }
+import React, { useState, useEffect } from 'react';
+
+const PerfumePage = () => {
+  const [visibleSections, setVisibleSections] = useState({
+    hero: false,
+    featured: false,
+    collection: false,
+    about: false
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('.animate-section');
+      
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const isVisible = rect.top <= window.innerHeight * 0.75;
+        
+        if (isVisible) {
+          setVisibleSections(prev => ({
+            ...prev,
+            [section.id]: true
+          }));
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const perfumes = [
+    {
+      id: 1,
+      name: "Ocean Breeze",
+      description: "신선한 해변의 향기",
+      price: "120,000원",
+      image: "/api/placeholder/300/400"
+    },
+    {
+      id: 2,
+      name: "Forest Mist",
+      description: "깊은 숲속의 청량감",
+      price: "150,000원",
+      image: "/api/placeholder/300/400"
+    },
+    {
+      id: 3,
+      name: "Midnight Rose",
+      description: "깊이있는 장미향",
+      price: "180,000원",
+      image: "/api/placeholder/300/400"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <section 
+        id="hero" 
+        className={`animate-section h-screen flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 transition-opacity duration-1000 ${
+          visibleSections.hero ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <div className="text-center text-white p-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">Perfume Collection</h1>
+          <p className="text-xl md:text-2xl">당신만의 특별한 향기를 찾아보세요</p>
+        </div>
+      </section>
+
+      {/* Featured Perfume */}
+      <section 
+        id="featured" 
+        className={`animate-section py-16 px-4 transition-all duration-1000 transform ${
+          visibleSections.featured ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}
+      >
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8">이달의 향수</h2>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="flex flex-col md:flex-row">
+              <div className="md:w-1/2">
+                <img 
+                  src="/api/placeholder/600/400" 
+                  alt="Featured perfume" 
+                  className="w-full h-64 md:h-full object-cover"
+                />
+              </div>
+              <div className="p-6 md:w-1/2">
+                <h3 className="text-2xl font-bold mb-2">Moonlight Garden</h3>
+                <p className="text-gray-600 mb-4">
+                  달빛 아래 피어나는 야생화의 은은한 향기를 담았습니다.
+                </p>
+                <p className="text-xl font-bold text-purple-600">200,000원</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Collection Grid */}
+      <section 
+        id="collection" 
+        className={`animate-section py-16 px-4 bg-gray-100 transition-all duration-1000 transform ${
+          visibleSections.collection ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}
+      >
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8">향수 컬렉션</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {perfumes.map((perfume) => (
+              <div 
+                key={perfume.id} 
+                className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105"
+              >
+                <img 
+                  src={perfume.image} 
+                  alt={perfume.name} 
+                  className="w-full h-64 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-bold mb-2">{perfume.name}</h3>
+                  <p className="text-gray-600 mb-2">{perfume.description}</p>
+                  <p className="text-lg font-bold text-purple-600">{perfume.price}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section 
+        id="about" 
+        className={`animate-section py-16 px-4 transition-all duration-1000 transform ${
+          visibleSections.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-8">우리의 이야기</h2>
+          <p className="text-gray-600 mb-6 text-lg">
+            자연에서 영감을 받아 만들어진 우리의 향수는 당신의 특별한 순간을 더욱 빛나게 만들어줍니다.
+          </p>
+          <button className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+            자세히 알아보기
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default PerfumePage;
