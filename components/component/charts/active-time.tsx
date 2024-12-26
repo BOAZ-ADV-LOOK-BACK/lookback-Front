@@ -42,7 +42,7 @@ export function CalendarEventVisualization() {
   }, []);
 
   // X축의 날짜 레이블을 요일로 변경
-  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const dayNames = ["월", "화", "수", "목", "금", "토", "일"];
   const CustomXAxisTick = ({ x, y, payload }) => {
     return (
       <g transform={`translate(${x},${y})`}>
@@ -101,11 +101,23 @@ export function CalendarEventVisualization() {
                 dataKey="day"
                 domain={[0, 6]}
                 ticks={[0, 1, 2, 3, 4, 5, 6]}
-                tick={<CustomXAxisTick />}
+                tick={({ x, y, payload }) => (
+                  <g transform={`translate(${x},${y})`}>
+                    <text 
+                      x={0} 
+                      y={0} 
+                      dy={16} 
+                      textAnchor="middle" 
+                      fill="#ffffff" 
+                      fontSize={12}
+                    >
+                      {dayNames[payload.value]}
+                    </text>
+                  </g>
+                )}
                 axisLine={{ stroke: "#ffffff" }}
                 tickLine={{ stroke: "#ffffff" }}
-                tick={{ fill: "#ffffff", fontSize: 10 }}
-              />
+                />
               <YAxis
                 type="number"
                 dataKey="startTime"
