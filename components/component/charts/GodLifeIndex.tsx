@@ -19,20 +19,20 @@ import { Progress } from "@/components/ui/progress"
 // API 호출 함수
 const fetchProgress = async (): Promise<number> => {
   try {
-    // const response = await fetch("/api/getdata");
-    // if (!response.ok) {
-    //   throw new Error("데이터를 가져오는 데 실패했습니다.");
-    // }
+    const response = await fetch("https://api.look-back.site/api/v1/calendar/dashboard-godLifeBar");
+    if (!response.ok) {
+      throw new Error("데이터를 가져오는 데 실패했습니다.");
+    }
 
-    // // data: 하루 10시간 이상 활동한 날이 20번인 달
-    // const data = await response.json();
-    // const godLifeIndex = (data.activeDays / 12) * 100;
+    const data = await response.json();
+    if (data.success !== true || typeof data.godLifeBar !== "number") {
+      throw new Error("올바르지 않은 API 응답 형식입니다.");
+    }
 
-    const godLifeIndex = Math.floor((7 / 12) * 100); // 추후 데이터를 API가져와서 갈아끼우면 여기 주석처리, 위쪽에 주석처리한 부분을 사용해야함
-    
+    const godLifeIndex = Math.floor(data.godLifeBar); // 소수점 아래 버림
     return Math.min(100, Math.max(0, godLifeIndex)); // 0~100 범위로 제한
   } catch (error) {
-    console.error(error);
+    console.error("API 호출 중 오류:", error);
     throw new Error("API 호출 중 오류가 발생했습니다.");
   }
 };
