@@ -1,11 +1,72 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ChartTooltipContent, ChartTooltip, ChartContainer } from "@/components/ui/chart"
-import { Pie, PieChart } from "recharts"
+import { Pie, PieChart } from "recharts";
+
+const fetchCategoryDistribution = async (): Promise<{ category: string; entry_number: number }[]> => {
+  try {
+    const response = await fetch("https://api.look-back.site/api/v1/calendar/dashboard-category-dist");
+    if (!response.ok) {
+      throw new Error("데이터를 가져오는 데 실패했습니다.");
+    }
+
+    const data = await response.json();
+    if (!data.success || !Array.isArray(data.categories)) {
+      throw new Error("올바르지 않은 API 응답 형식입니다.");
+    }
+
+    return data.categories; // 최대 6개만 반환
+  } catch (error) {
+    console.error("Category Distribution API 호출 중 오류:", error);
+    throw new Error("API 호출 중 오류가 발생했습니다.");
+  }
+};
+
+
+const exampleCategoryDistribution = {
+  "success": true,
+  "categories": [
+    { "category": "Work", "entry_number": 35 },
+    { "category": "Exercise", "entry_number": 20 },
+    { "category": "Study", "entry_number": 15 },
+    { "category": "Leisure", "entry_number": 10 },
+    { "category": "Social", "entry_number": 8 },
+    { "category": "Other", "entry_number": 5 }
+  ]
+}
 
 export function CategoryDistributionCard() {
+  const [categories, setCategories] = useState<{ category: string; entry_number: number }[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        // const data = await fetchCategoryDistribution();
+        const data = exampleCategoryDistribution.categories;
+        setCategories(data);
+        setError(null);
+      } catch (err) {
+        setError("데이터를 불러오는 데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error || !categories) {
+    return <p>{error || "데이터를 불러올 수 없습니다."}</p>;
+  }
+
   return (
     <Card className="flex-1 h-[400px]">
       <CardHeader>
@@ -14,60 +75,20 @@ export function CategoryDistributionCard() {
       </CardHeader>
       <CardContent className="flex items-center justify-center p-0 overflow-hidden">
         <div className="w-full h-full max-h-[100%] flex items-center justify-center translate-y-[-5%]">
-          <PiechartcustomChart className="aspect-[4/3] w-[100%] h-auto" />
+          <PieChart width={400} height={400}>
+            <Pie
+              data={categories}
+              dataKey="entry_number"
+              nameKey="category"
+              cx="50%"
+              cy="50%"
+              outerRadius={120}
+              fill="#82ca9d"
+              label={({ category }) => category}
+            />
+          </PieChart>
         </div>
       </CardContent>
     </Card>
   );
 }
-
-
-
-function PiechartcustomChart(props: any) {
-    return (
-      <div {...props}>
-        <ChartContainer
-          config={{
-            visitors: {
-              label: "Visitors",
-            },
-            chrome: {
-              label: "Chrome",
-              color: "hsl(var(--chart-1))",
-            },
-            safari: {
-              label: "Safari",
-              color: "hsl(var(--chart-2))",
-            },
-            firefox: {
-              label: "Firefox",
-              color: "hsl(var(--chart-3))",
-            },
-            edge: {
-              label: "Edge",
-              color: "hsl(var(--chart-4))",
-            },
-            other: {
-              label: "Other",
-              color: "hsl(var(--chart-5))",
-            },
-          }}
-        >
-          <PieChart>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Pie
-              data={[
-                { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-                { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-                { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-                { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-                { browser: "other", visitors: 90, fill: "var(--color-other)" },
-              ]}
-              dataKey="visitors"
-              nameKey="browser"
-            />
-          </PieChart>
-        </ChartContainer>
-      </div>
-    )
-  }
