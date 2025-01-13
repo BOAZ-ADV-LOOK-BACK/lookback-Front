@@ -18,24 +18,23 @@ import { Progress } from "@/components/ui/progress"
 
 // API 호출 함수
 const fetchProgress = async (): Promise<number> => {
-  // try {
-  //   const response = await fetch("https://api.look-back.site/api/v1/calendar/dashboard-godLifeBar");
-  //   if (!response.ok) {
-  //     throw new Error("데이터를 가져오는 데 실패했습니다.");
-  //   }
+  try {
+    const response = await fetch("https://api.look-back.site/api/v1/calendar/dashboard-godLifeBar");
+    if (!response.ok) {
+      throw new Error("데이터를 가져오는 데 실패했습니다.");
+    }
 
-  //   const data = await response.json();
-  //   if (data.success !== true || typeof data.godLifeBar !== "number") {
-  //     throw new Error("올바르지 않은 API 응답 형식입니다.");
-  //   }
+    const data = await response.json();
+    if (data.success !== true || typeof data.godLifeBar !== "number") {
+      throw new Error("올바르지 않은 API 응답 형식입니다.");
+    }
 
-  //   const godLifeIndex = Math.floor(data.godLifeBar); // 소수점 아래 버림
-  //   return Math.min(100, Math.max(0, godLifeIndex)); // 0~100 범위로 제한
-  // } catch (error) {
-  //   console.error("API 호출 중 오류:", error);
-  //   throw new Error("API 호출 중 오류가 발생했습니다.");
-  // }
-  return 50;
+    const godLifeIndex = Math.floor(data.godLifeBar); // 소수점 아래 버림
+    return Math.min(100, Math.max(0, godLifeIndex)); // 0~100 범위로 제한
+  } catch (error) {
+    console.error("API 호출 중 오류:", error);
+    throw new Error("API 호출 중 오류가 발생했습니다.");
+  }
 };
 
 export function GodLifeIndex() {
