@@ -21,6 +21,10 @@ import axios from "axios";
 const fetchProgress = async (): Promise<number> => {
   const token = localStorage.getItem("access_token");
 
+  if (!token) {
+    window.location.href = "/login"; // 로그인 페이지로 이동
+  }
+
   try {
     const response = await axios.post(
       "https://api.look-back.site/api/v1/calendar/dashboard-godLifeBar",
@@ -66,7 +70,7 @@ export function GodLifeIndex() {
     };
 
     getProgress();
-  });  // onProgress가 변할 때마다 useEffect가 실행됨
+  }, []);  // onProgress가 변할 때마다 useEffect가 실행됨
 
 
   if (isLoading) {
