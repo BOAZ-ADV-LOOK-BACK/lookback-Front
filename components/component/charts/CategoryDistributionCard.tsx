@@ -26,7 +26,7 @@ const fetchCategoryDistribution = async (): Promise<{ category: string; entry_nu
     }
 
     const data = response.data;
-    if (!data.success || typeof data.godLifeBar !== "number") {
+    if (!data.success) {
       throw new Error("올바르지 않은 API 응답 형식입니다.");
     }
 
