@@ -59,8 +59,8 @@ export function CategoryDistributionCard() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchCategoryDistribution();
-        // const data = exampleCategoryDistribution.categories;
+        // const data = await fetchCategoryDistribution();
+        const data = exampleCategoryDistribution.categories;
         setCategories(data);
         setError(null);
       } catch (err) {
