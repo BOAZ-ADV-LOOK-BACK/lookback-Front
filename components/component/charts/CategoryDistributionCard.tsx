@@ -63,8 +63,12 @@ export function CategoryDistributionCard() {
         // const data = exampleCategoryDistribution.categories;
         setCategories(data);
         setError(null);
-      } catch (err) {
-        setError("데이터를 불러오는 데 실패했습니다.");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);  // Error 객체일 경우 메시지로 처리
+        } else {
+          setError("알 수 없는 오류가 발생했습니다.");
+        }
       } finally {
         setIsLoading(false);
       }
