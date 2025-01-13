@@ -2,8 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Pie, PieChart } from "recharts";
+import { Pie, PieChart, Cell } from "recharts";
 import axios from "axios";
+
+const pastelColors = [
+  "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#FFB3FF"
+];
 
 
 const fetchCategoryDistribution = async (): Promise<{ category: string; entry_number: number }[]> => {
@@ -101,9 +105,13 @@ export function CategoryDistributionCard() {
               cx="50%"
               cy="50%"
               outerRadius={120}
-              fill="#82ca9d"
-              label={({ category }) => category}
-            />
+              label={({ summary }) => summary}
+            >
+              {/* 각 파이에 다른 색상 적용 */}
+              {categories.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={pastelColors[index % pastelColors.length]} />
+              ))}
+            </Pie>
           </PieChart>
         </div>
       </CardContent>
