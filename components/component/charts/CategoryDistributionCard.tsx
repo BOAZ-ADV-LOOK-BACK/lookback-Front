@@ -3,16 +3,30 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Pie, PieChart } from "recharts";
+import axios from "axios";
+
 
 const fetchCategoryDistribution = async (): Promise<{ category: string; entry_number: number }[]> => {
+  const token = localStorage.getItem("access_token");
+
+  if (!token) {
+    window.location.href = "/login"; // 로그인 페이지로 이동
+  }
+
   try {
-    const response = await fetch("https://api.look-back.site/api/v1/calendar/dashboard-category-dist");
-    if (!response.ok) {
-      throw new Error("데이터를 가져오는 데 실패했습니다.");
+    const response = await axios.post(
+      "https://api.look-back.site/api/v1/calendar/dashboard-category-dist",
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+
+    // 상태 코드가 200 범위 내에 있는지 확인
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(`HTTP 상태 코드 오류: ${response.status}`);
     }
 
-    const data = await response.json();
-    if (!data.success || !Array.isArray(data.categories)) {
+    const data = response.data;
+    if (!data.success || typeof data.godLifeBar !== "number") {
       throw new Error("올바르지 않은 API 응답 형식입니다.");
     }
 
