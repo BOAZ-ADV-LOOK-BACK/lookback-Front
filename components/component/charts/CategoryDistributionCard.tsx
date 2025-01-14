@@ -9,6 +9,10 @@ const pastelColors = [
   "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#FFB3FF"
 ];
 
+const textStyle = {
+  fontWeight: "bold",  // 진한 글자
+  fill: "#333333",     // 진한 회색 (다른 색으로 변경 가능)
+};
 
 const fetchCategoryDistribution = async (): Promise<{ category: string; entry_number: number }[]> => {
   const token = localStorage.getItem("access_token");
@@ -105,7 +109,11 @@ export function CategoryDistributionCard() {
               cx="50%"
               cy="50%"
               outerRadius={120}
-              label={({ summary }) => summary}
+              label={({ summary, x, y }) => (
+                <text x={x} y={y} textAnchor="middle" dominantBaseline="central" style={textStyle}>
+                  {summary}
+                </text>
+              )}
             >
               {/* 각 파이에 다른 색상 적용 */}
               {categories.map((entry, index) => (
