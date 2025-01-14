@@ -112,7 +112,7 @@ export function CategoryDistributionCard() {
               dataKey="entry_number"
               nameKey="category"
               cx="50%"
-              cy="30%"
+              cy="35%"
               outerRadius={110}
               label={({ summary, x, y, index }) => {
                 const baseColor = pastelColors[index % pastelColors.length];
