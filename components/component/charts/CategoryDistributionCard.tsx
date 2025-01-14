@@ -9,10 +9,15 @@ const pastelColors = [
   "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#FFB3FF"
 ];
 
-const textStyle = {
-  fontWeight: "bold",  // 진한 글자
-  fill: "#333333",     // 진한 회색 (다른 색으로 변경 가능)
+// RGB 값을 기반으로 색상을 어둡게 만드는 함수
+const darkenColor = (hexColor: string, amount: number): string => {
+  const num = parseInt(hexColor.replace("#", ""), 16);
+  const r = Math.max((num >> 16) - amount, 0);
+  const g = Math.max(((num >> 8) & 0x00ff) - amount, 0);
+  const b = Math.max((num & 0x0000ff) - amount, 0);
+  return `rgb(${r}, ${g}, ${b})`;
 };
+
 
 const fetchCategoryDistribution = async (): Promise<{ category: string; entry_number: number }[]> => {
   const token = localStorage.getItem("access_token");
@@ -109,11 +114,22 @@ export function CategoryDistributionCard() {
               cx="50%"
               cy="50%"
               outerRadius={120}
-              label={({ summary, x, y }) => (
-                <text x={x} y={y} textAnchor="middle" dominantBaseline="central" style={textStyle}>
-                  {summary}
-                </text>
-              )}
+              label={({ summary, x, y, index }) => {
+                const baseColor = pastelColors[index % pastelColors.length];
+                const darkColor = darkenColor(baseColor, 50); // 색상 진하게
+                return (
+                  <text
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill={darkColor} // 진한 색상 적용
+                    style={{ fontWeight: "bold" }}
+                  >
+                    {summary}
+                  </text>
+                );
+              }}
             >
               {/* 각 파이에 다른 색상 적용 */}
               {categories.map((entry, index) => (
