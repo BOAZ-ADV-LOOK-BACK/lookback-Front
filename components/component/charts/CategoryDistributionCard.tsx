@@ -112,8 +112,8 @@ export function CategoryDistributionCard() {
               dataKey="entry_number"
               nameKey="category"
               cx="50%"
-              cy="20%"
-              outerRadius={120}
+              cy="30%"
+              outerRadius={110}
               label={({ summary, x, y, index }) => {
                 const baseColor = pastelColors[index % pastelColors.length];
                 const darkColor = darkenColor(baseColor, 70); // 색상 진하게
