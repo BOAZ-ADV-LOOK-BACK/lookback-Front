@@ -99,55 +99,46 @@ export function CategoryDistributionCard() {
   }
 
   return (
-    <div
-      className="flex flex-1"
-      style={{
-        height: "100%", // 부모 높이를 따름
-        maxHeight: "100%", // 부모 높이를 초과하지 않음
-        overflow: "hidden", // 초과되는 콘텐츠 숨김
-      }}
-    >
-      <Card className="flex-1 h-[400px]">
-        <CardHeader>
-          <CardTitle>내가 가장 많이 수행한 카테고리는?</CardTitle>
-          <CardDescription>일정 카테고리 비율</CardDescription>
-        </CardHeader>
-        <CardContent className="flex items-center justify-center p-0 overflow-hidden">
-          <div className="w-full h-full max-h-[100%] flex items-center justify-center translate-y-[-5%]">
-            <PieChart width={400} height={400}>
-              <Pie
-                data={categories}
-                dataKey="entry_number"
-                nameKey="category"
-                cx="50%"
-                cy="50%"
-                outerRadius={120}
-                label={({ summary, x, y, index }) => {
-                  const baseColor = pastelColors[index % pastelColors.length];
-                  const darkColor = darkenColor(baseColor, 70); // 색상 진하게
-                  return (
-                    <text
-                      x={x}
-                      y={y}
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      fill={darkColor} // 진한 색상 적용
-                      style={{ fontWeight: "bold" }}
-                    >
-                      {summary}
-                    </text>
-                  );
-                }}
-              >
-                {/* 각 파이에 다른 색상 적용 */}
-                {categories.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={pastelColors[index % pastelColors.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="flex-1 h-[400px]">
+      <CardHeader>
+        <CardTitle>내가 가장 많이 수행한 카테고리는?</CardTitle>
+        <CardDescription>일정 카테고리 비율</CardDescription>
+      </CardHeader>
+      <CardContent className="flex items-center justify-center p-0 overflow-hidden">
+        <div className="w-full h-full max-h-[80%] flex items-center justify-center translate-y-[-5%]">
+          <PieChart width={400} height={400}>
+            <Pie
+              data={categories}
+              dataKey="entry_number"
+              nameKey="category"
+              cx="50%"
+              cy="50%"
+              outerRadius={120}
+              label={({ summary, x, y, index }) => {
+                const baseColor = pastelColors[index % pastelColors.length];
+                const darkColor = darkenColor(baseColor, 70); // 색상 진하게
+                return (
+                  <text
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill={darkColor} // 진한 색상 적용
+                    style={{ fontWeight: "bold" }}
+                  >
+                    {summary}
+                  </text>
+                );
+              }}
+            >
+              {/* 각 파이에 다른 색상 적용 */}
+              {categories.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={pastelColors[index % pastelColors.length]} />
+              ))}
+            </Pie>
+          </PieChart>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
