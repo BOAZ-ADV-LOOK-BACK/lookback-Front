@@ -47,9 +47,9 @@ const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
       throw new Error(`HTTP 상태 코드 오류: ${response.status}`);
     }
 
-    console.log("호출된 data:", response.data)
+    console.log("호출된 data:", response.data.spendingTime)
 
-    return response.data 
+    return response.data.spendingTime
   } catch (err: Error | unknown) {
     console.error("API 호출 중 오류:", err);
     throw new Error("API 호출 중 오류가 발생했습니다.");
@@ -150,6 +150,8 @@ function LinechartChart({ className }: { className?: string }) {
           x: key,
           y: value,
         }));
+
+        
 
         setChartData([
           {
