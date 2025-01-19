@@ -68,9 +68,16 @@ const ChartContainer = React.forwardRef<
 ChartContainer.displayName = "Chart"
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  if (!config || Object.keys(config).length === 0) {
+    return null;
+  }
+  // 나머지 기존 로직
   const colorConfig = Object.entries(config).filter(
-    ([_, config]) => config.theme || config.color
+    ([_, itemConfig]) => itemConfig.theme || itemConfig.color
   )
+  // const colorConfig = Object.entries(config).filter(
+  //   ([_, config]) => config.theme || config.color
+  // )s
 
   if (!colorConfig.length) {
     return null
