@@ -58,7 +58,7 @@ export function CategoryDistributionCard() {
 
         // JWT 디코딩하여 사용자 이름 가져오기
         const decodedToken: any = jwtDecode("userName");
-        setUserName(decodedToken.user.name || "사용자");
+        setUserName(decodedToken || "사용자");
 
         const data = await fetchCategoryDistribution(token);
         setCategories(data);
