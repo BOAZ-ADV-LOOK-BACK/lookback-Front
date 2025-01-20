@@ -14,7 +14,7 @@ interface ChartData {
   value: number;
 }
 
-const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
+const fetchEventTypes = async (): Promise<ActivityResponse> => {
   const token = localStorage.getItem("access_token");
 
   if (!token) {
@@ -40,7 +40,7 @@ const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
   }
 };
 
-function ActivityBarChart({ data }: { data: ChartData[] }) {
+function EventTypesBarChart({ data }: { data: ChartData[] }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart
@@ -90,7 +90,7 @@ function ActivityBarChart({ data }: { data: ChartData[] }) {
   );
 }
 
-function ActivityChartContainer({ className }: { className?: string }) {
+function ChartContainer({ className }: { className?: string }) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [chartData, setChartData] = React.useState<ChartData[]>([]);
@@ -99,7 +99,7 @@ function ActivityChartContainer({ className }: { className?: string }) {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await weeklyActivityFetch();
+        const data = await fetchEventTypes();
         
         const transformedData = Object.entries(data).map(([key, value]) => ({
           name: key,
@@ -128,12 +128,12 @@ function ActivityChartContainer({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <ActivityBarChart data={chartData} />
+      <EventTypesBarChart data={chartData} />
     </div>
   );
 }
 
-export default function WeeklyActivityCard() {
+export function EventTypesCard() {
   return (
     <Card>
       <CardHeader>
@@ -141,7 +141,7 @@ export default function WeeklyActivityCard() {
         <CardDescription>Event Types</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
-        <ActivityChartContainer className="w-full h-full" />
+        <ChartContainer className="w-full h-full" />
       </CardContent>
     </Card>
   );
