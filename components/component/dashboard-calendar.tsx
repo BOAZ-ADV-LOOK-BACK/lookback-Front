@@ -126,7 +126,7 @@ export default function DashboardCalendar() {
       );
       
       // 응답 데이터 처리
-      const data = response.data.data;
+      const data = response.data.data.events;
       setEvents(data.map((event: { date: string; title: string }) => ({
         ...event,
         date: new Date(event.date) // 문자열을 Date 객체로 변환
