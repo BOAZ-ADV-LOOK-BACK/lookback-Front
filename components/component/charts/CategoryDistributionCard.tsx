@@ -99,7 +99,7 @@ export function CategoryDistributionCard() {
   }
 
 //   return (
-//     <Card className="flex-1">
+//     <Card className="flex-1 h-[400px]">
 //       <CardHeader>
 //         <CardTitle>내가 가장 많이 수행한 카테고리는?</CardTitle>
 //         <CardDescription>일정 카테고리 비율</CardDescription>
@@ -143,21 +143,21 @@ export function CategoryDistributionCard() {
 //   );
 // }
 return (
-  <Card className="flex-1">
+  <Card className="h-[calc(100%-200px-1rem)]">
     <CardHeader className="pb-2">
       <CardTitle>내가 가장 많이 수행한 카테고리는?</CardTitle>
       <CardDescription>일정 카테고리 비율</CardDescription>
     </CardHeader>
     <CardContent className="p-0">
-      <div className="w-full flex items-center justify-center">
-        <PieChart width={300} height={220}>
+      <div className="w-full h-[calc(100%-4rem)] flex items-center justify-center">
+        <PieChart width={300} height={200}>
           <Pie
             data={categories}
             dataKey="entry_number"
             nameKey="category"
             cx="50%"
             cy="50%"
-            outerRadius={90}
+            outerRadius={80}
             label={({ summary, x, y, index }) => {
               const baseColor = pastelColors[index % pastelColors.length];
               const darkColor = darkenColor(baseColor, 70);
