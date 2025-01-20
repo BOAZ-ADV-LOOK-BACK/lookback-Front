@@ -57,7 +57,7 @@ export function ChronotypeAnalysis() {
   };
 
   const averageMidTime = calculateAverageMidTime(weeklyData.this_week);
-  const isEveningType = averageMidTime >= 15; // 오후 3시 이후를 기준으로 저녁형 판단
+  const isEveningType = averageMidTime >= 17; // 오후 3시 이후를 기준으로 저녁형 판단
 
   if (isLoading) {
     return (
