@@ -126,15 +126,18 @@ export default function DashboardCalendar() {
       );
       
       // 응답 데이터 처리
-      const data = response.data.data.events;
-      setEvents(data.map((event: { date: string; title: string }) => ({
-        ...event,
-        date: new Date(event.date) // 문자열을 Date 객체로 변환
+      const events = response.data.data.events;
+      setEvents(events.map((event: any) => ({
+        title: event.summary, // 일정 제목
+        startDate: new Date(event.start.dateTime), // 시작 날짜
+        endDate: new Date(event.end.dateTime), // 종료 날짜
+        description: event.description, // 설명 (있는 경우)
       })));
     } catch (error) {
       console.error('API 요청 실패:', error);
     }
   };
+  
 
   // 컴포넌트가 마운트될 때 API 호출
   useEffect(() => {
