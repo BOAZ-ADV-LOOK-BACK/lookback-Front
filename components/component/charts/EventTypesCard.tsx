@@ -46,7 +46,7 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
       <BarChart
         data={data}
         margin={{
-          top: 10,
+          top: 30,
           right: 10,
           left: 40,
           bottom: 60,
@@ -55,15 +55,40 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
         <XAxis
           dataKey="name"
-          padding={{ left: 10, right: 10 }}
-          tick={{ fontSize: 12 }}
-          tickMargin={16}
+          interval={0}
+          padding={{ left: 0, right: 0 }}
+          tick={(props) => {
+            const { x, y, payload } = props;
+            const words = payload.value.split(' ');
+            const lineHeight = 14;
+            
+            return (
+              <g transform={`translate(${x},${y})`}>
+                {words.map((word, index) => (
+                  <text
+                    key={index}
+                    x={0}
+                    y={0}
+                    dy={index * lineHeight}
+                    textAnchor="middle"
+                    fill="#666"
+                    fontSize={12}
+                  >
+                    {word}
+                  </text>
+                ))}
+              </g>
+            );
+          }}
+          height={60}
+          tickMargin={20}
         />
         <YAxis
           tick={{ fontSize: 12 }}
           tickMargin={16}
           width={40}
-          label={{ value: '시간 (hours)', angle: -90, position: 'insideLeft', offset: 20 }}
+          label={{ value: '시간 (minutes)', angle: 0, position: 'top', dy: -10, fontSize: 12, fill: "#666" }}
+          allowDataOverflow={true}
         />
         <Tooltip
           cursor={{ fill: '#f3f4f6', opacity: 0.3 }}
@@ -71,8 +96,8 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
             if (active && payload && payload.length) {
               return (
                 <div className="bg-white p-2 border border-gray-200 rounded shadow">
-                  <p className="font-medium">{label}</p>
-                  <p className="text-blue-600">{`${payload[0].value}시간`}</p>
+                  <p className="font-medium text-[12px]">{label}</p>
+                  <p className="text-blue-600 text-[12px]">{`${payload[0].value}분`}</p>
                 </div>
               );
             }
@@ -101,10 +126,13 @@ function ChartContainer({ className }: { className?: string }) {
         setIsLoading(true);
         const data = await fetchEventTypes();
         
-        const transformedData = Object.entries(data).map(([key, value]) => ({
-          name: key,
-          value: value,
-        }));
+        const transformedData = Object.entries(data)
+          .filter(([_, value]) => value > 0)
+          .map(([key, value]) => ({
+            name: key,
+            value: value,
+          }));
+
 
         setChartData(transformedData);
         setError(null);
