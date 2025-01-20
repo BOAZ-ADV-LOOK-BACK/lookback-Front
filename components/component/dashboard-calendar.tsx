@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { addDays, eachDayOfInterval, endOfMonth, format, getDay, isToday, startOfMonth, isSameDay } from "date-fns"
 import axios from "axios"
@@ -33,7 +33,7 @@ export default function DashboardCalendar() {
         {}, // 요청 바디
         { headers: { Authorization: `Bearer ${token}` } } // 헤더에 토큰 추가
       );
-      
+
       // 응답 데이터 처리
       const events = response.data.events;
       setEvents(events.map((event: any) => ({
@@ -46,16 +46,16 @@ export default function DashboardCalendar() {
       console.error('API 요청 실패:', error);
     }
   };
-  
+
 
   // 컴포넌트가 마운트될 때 API 호출
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  const hasEvent = (date: Date): boolean => 
+  const hasEvent = (date: Date): boolean =>
     events.some(event => isSameDay(event.date, date))
-  
+
   const getEventsForDate = (date: Date): Event[] =>
     events.filter(event => isSameDay(event.date, date))
 
@@ -86,10 +86,12 @@ export default function DashboardCalendar() {
                 onMouseLeave={() => setHoveredDate(null)}
               >
                 <div
-                  className={`w-10 h-10 flex items-center justify-center text-sm rounded-full ${
-                    isToday(day) ? "bg-primary text-primary-foreground" :
-                    hasEvent(day) ? "bg-secondary text-secondary-foreground" : ""
-                  }`}
+                  className={`w-10 h-10 flex items-center justify-center text-sm rounded-full ${isToday(day)
+                      ? "bg-primary text-primary-foreground"
+                      : hasEvent(day)
+                        ? "bg-[#005A8B] bg-opacity-70 text-white" // 다저스 블루 색상 + 낮춘 투명도
+                        : ""
+                    }`}
                 >
                   {format(day, "d")}
                 </div>
