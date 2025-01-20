@@ -1,36 +1,75 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import ImgSparrow from '@/public/참새ㅐ.png';
 import ImgOwl from '@/public/올빼미ㅣ.png';
 import Image from "next/image";
+import axios from "axios";
 
-interface ChronotypeAnalysisProps {
-  eventData: Array<{
-    midTime: number
-  }>
+interface Event {
+  day: number;
+  startTime: number;
+  endTime: number;
+  duration: number;
 }
 
-export function ChronotypeAnalysis({ eventData }: ChronotypeAnalysisProps = {
-  eventData: [
-    { midTime: 13 },
-    { midTime: 12.5 },
-    { midTime: 16 },
-    { midTime: 10 },
-    { midTime: 16 },
-    { midTime: 13.5 },
-    { midTime: 11.5 },
-    { midTime: 13.5 },
-    { midTime: 13 }
-  ]
-}) {
-    let averageMidTime = 0;
-    if (eventData && eventData.length > 0) {
-        averageMidTime = eventData.reduce((sum, event) => sum + event.midTime, 0) / eventData.length;
-    }
+interface WeeklyData {
+  this_week: Event[];
+  last_week: Event[];
+}
 
-    const isEveningType = averageMidTime > 17;
+export function ChronotypeAnalysis() {
+  const [weeklyData, setWeeklyData] = useState<WeeklyData>({ this_week: [], last_week: [] });
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchWeeklyActivityData = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await axios.get(
+          "https://api.look-back.site/api/v1/calendar/weekly-activity",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        if (response.data.success) {
+          setWeeklyData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch weekly activity data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWeeklyActivityData();
+  }, []);
+
+  // 평균 활동 중간 시간 계산
+  const calculateAverageMidTime = (events: Event[]) => {
+    if (!events.length) return 0;
+    
+    return events.reduce((sum, event) => {
+      // 중간 시간 계산
+      const midTime = (event.startTime + event.endTime) / 2;
+      return sum + midTime;
+    }, 0) / events.length;
+  };
+
+  const averageMidTime = calculateAverageMidTime(weeklyData.this_week);
+  const isEveningType = averageMidTime >= 15; // 오후 3시 이후를 기준으로 저녁형 판단
+
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <p>Loading chronotype data...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
     return (
     <Card className="w-full max-w-md">
       <CardHeader>
