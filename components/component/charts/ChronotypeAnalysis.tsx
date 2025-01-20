@@ -22,11 +22,15 @@ interface WeeklyData {
 export function ChronotypeAnalysis() {
   const [weeklyData, setWeeklyData] = useState<WeeklyData>({ this_week: [], last_week: [] });
   const [isLoading, setIsLoading] = useState(true);
+  const [userName, setUserName] = useState<string | null>(null);
+
 
   useEffect(() => {
     const fetchWeeklyActivityData = async () => {
       try {
         const token = localStorage.getItem("access_token");
+        const userName = localStorage.getItem("userName");
+        setUserName(userName || "사용자");
         const response = await axios.get(
           "https://api.look-back.site/api/v1/calendar/weekly-activity",
           { headers: { Authorization: `Bearer ${token}` } }
@@ -73,7 +77,7 @@ export function ChronotypeAnalysis() {
     return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle> 이하윤님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요{isEveningType ? '🌙' : '☀️'}</CardTitle>
+        <CardTitle> {userName}님은 {isEveningType ? '저녁형' : '아침형'} 인간이에요{isEveningType ? '🌙' : '☀️'}</CardTitle>
         <CardDescription>주 활동 유형</CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center p-6">

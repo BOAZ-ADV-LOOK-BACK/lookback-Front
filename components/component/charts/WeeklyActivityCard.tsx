@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from "axios";
@@ -15,9 +15,15 @@ interface ChartData {
   value: number;
 }
 
+const [userName, setUserName] = useState<string | null>(null);
+
+
 // 백엔드 API 호출 함수 
 const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
+  
   const token = localStorage.getItem("access_token");
+  const userName = localStorage.getItem("userName");
+  setUserName(userName || "사용자");
 
   if (!token) {
     window.location.href = "/login";
@@ -130,7 +136,7 @@ export function WeeklyActivityCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>이번 주 이하윤님의 활동</CardTitle>
+        <CardTitle>이번 주 {userName}님의 활동</CardTitle>
         <CardDescription>Tasks Completed</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
