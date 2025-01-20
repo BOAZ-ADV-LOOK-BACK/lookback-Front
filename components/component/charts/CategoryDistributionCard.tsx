@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Pie, PieChart, Cell } from "recharts";
 import axios from "axios";
+import jwtDecode from "jsonwebtoken"; // JWT 디코딩 라이브러리 설치 필요
 
 const pastelColors = [
   "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#FFB3FF"
@@ -18,67 +19,52 @@ const darkenColor = (hexColor: string, amount: number): string => {
   return `rgb(${r}, ${g}, ${b})`;
 };
 
-
-const fetchCategoryDistribution = async (): Promise<{ category: string; entry_number: number }[]> => {
-  const token = localStorage.getItem("access_token");
-
-  if (!token) {
-    window.location.href = "/login"; // 로그인 페이지로 이동
-  }
-
+const fetchCategoryDistribution = async (token: string): Promise<{ category: string; entry_number: number }[]> => {
   try {
     const response = await axios.post(
       "https://api.look-back.site/api/v1/calendar/dashboard-category-dist",
       {},
       { headers: { Authorization: `Bearer ${token}` } }
-    )
+    );
 
-    // 상태 코드가 200 범위 내에 있는지 확인
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(`HTTP 상태 코드 오류: ${response.status}`);
-    }
-
-    const data = response.data;
-    if (!data.success) {
+    if (!response.data.success) {
       throw new Error("올바르지 않은 API 응답 형식입니다.");
     }
 
-    return data.categories; // 최대 6개만 반환
+    return response.data.categories;
   } catch (error) {
     console.error("Category Distribution API 호출 중 오류:", error);
     throw new Error("API 호출 중 오류가 발생했습니다.");
   }
 };
 
-
-const exampleCategoryDistribution = {
-  "success": true,
-  "categories": [
-    { "category": "Work", "entry_number": 35 },
-    { "category": "Exercise", "entry_number": 20 },
-    { "category": "Study", "entry_number": 15 },
-    { "category": "Leisure", "entry_number": 10 },
-    { "category": "Social", "entry_number": 8 },
-    { "category": "Other", "entry_number": 5 }
-  ]
-}
-
 export function CategoryDistributionCard() {
   const [categories, setCategories] = useState<{ category: string; entry_number: number }[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchCategoryDistribution();
-        // const data = exampleCategoryDistribution.categories;
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+          window.location.href = "/login";
+          return;
+        }
+
+        // JWT 디코딩하여 사용자 이름 가져오기
+        const decodedToken: any = jwtDecode(token);
+        setUserName(decodedToken.full_name || "사용자");
+
+        const data = await fetchCategoryDistribution(token);
         setCategories(data);
         setError(null);
       } catch (err: unknown) {
         if (err instanceof Error) {
-          setError(err.message);  // Error 객체일 경우 메시지로 처리
+          setError(err.message);
         } else {
           setError("알 수 없는 오류가 발생했습니다.");
         }
@@ -101,8 +87,8 @@ export function CategoryDistributionCard() {
   return (
     <Card className="flex-1 h-[400px]">
       <CardHeader>
-        <CardTitle>내가 가장 많이 수행한 카테고리는?</CardTitle>
-        <CardDescription>일정 카테고리 비율</CardDescription>
+        <CardTitle>안녕하세요, {userName}님!</CardTitle>
+        <CardDescription>내가 가장 많이 수행한 일정 카테고리는?</CardDescription>
       </CardHeader>
       <CardContent className="flex items-center justify-center p-0 overflow-hidden">
         <div className="w-full h-full max-h-[80%] flex items-center justify-center translate-y-[-5%]">
@@ -114,24 +100,23 @@ export function CategoryDistributionCard() {
               cx="50%"
               cy="35%"
               outerRadius={110}
-              label={({ summary, x, y, index }) => {
+              label={({ name, x, y, index }) => {
                 const baseColor = pastelColors[index % pastelColors.length];
-                const darkColor = darkenColor(baseColor, 70); // 색상 진하게
+                const darkColor = darkenColor(baseColor, 70);
                 return (
                   <text
                     x={x}
                     y={y}
                     textAnchor="middle"
                     dominantBaseline="central"
-                    fill={darkColor} // 진한 색상 적용
+                    fill={darkColor}
                     style={{ fontWeight: "bold" }}
                   >
-                    {summary}
+                    {name}
                   </text>
                 );
               }}
             >
-              {/* 각 파이에 다른 색상 적용 */}
               {categories.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={pastelColors[index % pastelColors.length]} />
               ))}
