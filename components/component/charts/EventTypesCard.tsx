@@ -133,7 +133,7 @@ function ActivityChartContainer({ className }: { className?: string }) {
   );
 }
 
-export function WeeklyActivityCard() {
+export default function WeeklyActivityCard() {
   return (
     <Card>
       <CardHeader>
