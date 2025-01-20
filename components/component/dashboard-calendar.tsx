@@ -91,9 +91,11 @@
 // }
 "use client"
 
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { addDays, eachDayOfInterval, endOfMonth, format, getDay, isToday, startOfMonth, isSameDay } from "date-fns"
+import axios from "axios"
+
 
 interface Event {
   date: Date;
@@ -108,16 +110,36 @@ export default function DashboardCalendar() {
   const lastDayOfMonth = endOfMonth(today)
   const daysInMonth = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth })
   const startingDayIndex = getDay(firstDayOfMonth)
-  
-  const events: Event[] = [
-    { date: new Date(currentYear, currentMonth, 5), title: "회의" },
-    { date: new Date(currentYear, currentMonth, 10), title: "프로젝트 마감" },
-    { date: new Date(currentYear, currentMonth, 15), title: "팀 빌딩" },
-    { date: new Date(currentYear, currentMonth, 20), title: "고객 미팅" },
-    { date: new Date(currentYear, currentMonth, 25), title: "분기 보고" },
-  ];
 
+  // 상태 정의
+  const [events, setEvents] = useState<Event[]>([]); // 이벤트 데이터를 상태로 관리
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null)
+
+  // API에서 일정 데이터를 가져오는 함수
+  const fetchEvents = async () => {
+    try {
+      const token = "YOUR_BEARER_TOKEN"; // 실제 토큰 값으로 교체
+      const response = await axios.post(
+        "https://api.look-back.site/api/v1/calendar/dashboard-calendar-schedule", // API 엔드포인트
+        {}, // 요청 바디
+        { headers: { Authorization: `Bearer ${token}` } } // 헤더에 토큰 추가
+      );
+      
+      // 응답 데이터 처리
+      const data = response.data.data;
+      setEvents(data.map((event: { date: string; title: string }) => ({
+        ...event,
+        date: new Date(event.date) // 문자열을 Date 객체로 변환
+      })));
+    } catch (error) {
+      console.error('API 요청 실패:', error);
+    }
+  };
+
+  // 컴포넌트가 마운트될 때 API 호출
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const hasEvent = (date: Date): boolean => 
     events.some(event => isSameDay(event.date, date))
@@ -144,7 +166,7 @@ export default function DashboardCalendar() {
             {Array.from({ length: startingDayIndex }).map((_, index) => (
               <div key={`empty-${index}`} />
             ))}
-            {daysInMonth.map((day, index: number) => (
+            {daysInMonth.map((day: any, index: number) => (
               <div
                 key={day.toISOString()}
                 className="aspect-square flex items-center justify-center relative"
