@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Pie, PieChart, Cell } from "recharts";
 import axios from "axios";
-import jwtDecode from "jsonwebtoken"; // JWT 디코딩 라이브러리 설치 필요
+import jwtDecode from "jwt-decode";
 
 const pastelColors = [
   "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#FFB3FF"
