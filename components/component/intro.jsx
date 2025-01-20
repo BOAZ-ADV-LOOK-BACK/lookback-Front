@@ -19,9 +19,12 @@ const GoogleLoginBtn = () => {
     onSuccess: async ({ code }) => {
       const response = await axios.post("https://api.look-back.site/api/v1/login", { code });
       const jwtToken = response.data.access_token;
+      const fullToken = response.data;
   
       localStorage.setItem('access_token', jwtToken);
+      localStorage.setItem('fullToken', fullToken);
       console.log("Access Token 저장 성공:", localStorage.getItem('access_token')); 
+      console.log("Full Token 저장 성공"); 
   
       // 로그인 성공 후 바로 페이지 이동
       router.replace('/dashboard-afterlogin');
