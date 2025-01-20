@@ -46,16 +46,17 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
       <BarChart
         data={data}
         margin={{
-          top: 10,
+          top: 30,
           right: 10,
           left: 40,
-          bottom: 60,
+          bottom: 20,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
         <XAxis
           dataKey="name"
-          padding={{ left: 10, right: 10 }}
+          interval={0}
+          padding={{ left: 0, right: 0 }}
           tick={{ fontSize: 12 }}
           tickMargin={16}
         />
@@ -63,7 +64,8 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
           tick={{ fontSize: 12 }}
           tickMargin={16}
           width={40}
-          label={{ value: '시간 (hours)', angle: -90, position: 'insideLeft', offset: 20 }}
+          label={{ value: '시간 (minutes)', angle: -90, position: 'top', dx: -20 }}
+          allowDataOverflow={true}
         />
         <Tooltip
           cursor={{ fill: '#f3f4f6', opacity: 0.3 }}
