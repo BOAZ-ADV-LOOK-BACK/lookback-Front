@@ -49,13 +49,14 @@ export function CategoryDistributionCard() {
         setIsLoading(true);
         const token = localStorage.getItem("access_token");
         const userName = localStorage.getItem("userName");
+        setUserName(userName || "사용자");
+
 
         if (!token) {
           window.location.href = "/login";
           return;
         }
 
-        setUserName(userName || "사용자");
 
         const data = await fetchCategoryDistribution(token);
         setCategories(data);
