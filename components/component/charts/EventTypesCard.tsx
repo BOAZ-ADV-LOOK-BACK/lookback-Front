@@ -146,5 +146,3 @@ export default function WeeklyActivityCard() {
     </Card>
   );
 }
-
-export default WeeklyActivityCard;
