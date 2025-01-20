@@ -96,8 +96,8 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
             if (active && payload && payload.length) {
               return (
                 <div className="bg-white p-2 border border-gray-200 rounded shadow">
-                  <p className="font-medium">{label}</p>
-                  <p className="text-blue-600">{`${payload[0].value}분`}</p>
+                  <p className="font-medium text-[12px]">{label}</p>
+                  <p className="text-blue-600 text-[12px]">{`${payload[0].value}분`}</p>
                 </div>
               );
             }
