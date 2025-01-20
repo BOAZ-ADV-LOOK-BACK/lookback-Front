@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Pie, PieChart, Cell } from "recharts";
 import axios from "axios";
-import { decode } from "jwt-decode";  // `decode`를 named import 방식으로 가져오기
+import { jwtDecode } from "jwt-decode";
 
 const pastelColors = [
   "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#FFB3FF"
@@ -56,7 +56,7 @@ export function CategoryDistributionCard() {
         }
 
         // JWT 디코딩하여 사용자 이름 가져오기
-        const decodedToken: any = decode(token);
+        const decodedToken: any = jwtDecode(token);
         setUserName(decodedToken.full_name || "사용자");
 
         const data = await fetchCategoryDistribution(token);
