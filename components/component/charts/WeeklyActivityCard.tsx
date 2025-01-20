@@ -15,16 +15,10 @@ interface ChartData {
   value: number;
 }
 
-const [userName, setUserName] = useState<string | null>(null);
-
-
 // 백엔드 API 호출 함수 
 const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
-  
   const token = localStorage.getItem("access_token");
-  const userName = localStorage.getItem("userName");
-  setUserName(userName || "사용자");
-
+  
   if (!token) {
     window.location.href = "/login";
     throw new Error("로그인이 필요합니다.");
@@ -88,12 +82,12 @@ function ActivityLineChart({ data }: { data: ChartData[] }) {
 }
 
 // 차트 컨테이너 컴포넌트
-function ActivityChartContainer({ className }: { className?: string }) {
+function ActivityChartContainer({ className, userName }: { className?: string; userName: string }) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [chartData, setChartData] = React.useState<ChartData[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
@@ -133,6 +127,14 @@ function ActivityChartContainer({ className }: { className?: string }) {
 
 // 메인 카드 컴포넌트
 export function WeeklyActivityCard() {
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // 로컬 스토리지에서 사용자 이름 가져오기
+    const storedUserName = localStorage.getItem("userName");
+    setUserName(storedUserName || "사용자");
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -140,7 +142,7 @@ export function WeeklyActivityCard() {
         <CardDescription>Tasks Completed</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
-        <ActivityChartContainer className="w-full h-full" />
+        <ActivityChartContainer className="w-full h-full" userName={userName || "사용자"} />
       </CardContent>
     </Card>
   );
