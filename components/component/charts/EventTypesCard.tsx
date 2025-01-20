@@ -97,7 +97,7 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
               return (
                 <div className="bg-white p-2 border border-gray-200 rounded shadow">
                   <p className="font-medium">{label}</p>
-                  <p className="text-blue-600">{`${payload[0].value}시간`}</p>
+                  <p className="text-blue-600">{`${payload[0].value}분`}</p>
                 </div>
               );
             }
@@ -126,10 +126,13 @@ function ChartContainer({ className }: { className?: string }) {
         setIsLoading(true);
         const data = await fetchEventTypes();
         
-        const transformedData = Object.entries(data).map(([key, value]) => ({
-          name: key,
-          value: value,
-        }));
+        const transformedData = Object.entries(data)
+          .filter(([_, value]) => value > 0)
+          .map(([key, value]) => ({
+            name: key,
+            value: value,
+          }));
+
 
         setChartData(transformedData);
         setError(null);
