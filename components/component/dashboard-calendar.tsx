@@ -118,7 +118,7 @@ export default function DashboardCalendar() {
   // API에서 일정 데이터를 가져오는 함수
   const fetchEvents = async () => {
     try {
-      const token = "YOUR_BEARER_TOKEN"; // 실제 토큰 값으로 교체
+      const token = localStorage.getItem("access_token");
       const response = await axios.post(
         "https://api.look-back.site/api/v1/calendar/dashboard-calendar-schedule", // API 엔드포인트
         {}, // 요청 바디
