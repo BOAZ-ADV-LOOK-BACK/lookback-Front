@@ -126,7 +126,7 @@ export default function DashboardCalendar() {
       );
       
       // 응답 데이터 처리
-      const events = response.data.data.events;
+      const events = response.data.events;
       setEvents(events.map((event: any) => ({
         title: event.summary, // 일정 제목
         startDate: new Date(event.start.dateTime), // 시작 날짜
