@@ -49,7 +49,7 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
           top: 30,
           right: 10,
           left: 40,
-          bottom: 20,
+          bottom: 60,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
@@ -57,14 +57,37 @@ function EventTypesBarChart({ data }: { data: ChartData[] }) {
           dataKey="name"
           interval={0}
           padding={{ left: 0, right: 0 }}
-          tick={{ fontSize: 12 }}
-          tickMargin={16}
+          tick={(props) => {
+            const { x, y, payload } = props;
+            const words = payload.value.split(' ');
+            const lineHeight = 14;
+            
+            return (
+              <g transform={`translate(${x},${y})`}>
+                {words.map((word, index) => (
+                  <text
+                    key={index}
+                    x={0}
+                    y={0}
+                    dy={index * lineHeight}
+                    textAnchor="middle"
+                    fill="#666"
+                    fontSize={12}
+                  >
+                    {word}
+                  </text>
+                ))}
+              </g>
+            );
+          }}
+          height={60}
+          tickMargin={20}
         />
         <YAxis
           tick={{ fontSize: 12 }}
           tickMargin={16}
           width={40}
-          label={{ value: '시간 (minutes)', angle: -90, position: 'top', dx: -20 }}
+          label={{ value: '시간 (minutes)', angle: 0, position: 'top', dy: -10, fontSize: 12, fill: "#666" }}
           allowDataOverflow={true}
         />
         <Tooltip
