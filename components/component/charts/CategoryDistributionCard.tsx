@@ -49,6 +49,7 @@ export function CategoryDistributionCard() {
       try {
         setIsLoading(true);
         const token = localStorage.getItem("access_token");
+        const fullToken = localStorage.getItem("fullToken");
 
         if (!token) {
           window.location.href = "/login";
@@ -56,7 +57,7 @@ export function CategoryDistributionCard() {
         }
 
         // JWT 디코딩하여 사용자 이름 가져오기
-        const decodedToken: any = jwtDecode(token);
+        const decodedToken: any = jwtDecode(fullToken);
         setUserName(decodedToken.user.name || "사용자");
 
         const data = await fetchCategoryDistribution(token);
