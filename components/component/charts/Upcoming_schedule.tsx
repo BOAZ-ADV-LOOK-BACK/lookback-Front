@@ -1,36 +1,106 @@
-// src/components/UpcomingSchedule.tsx
 import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import axios from "axios";
+
+interface Event {
+    Time: Date;
+    name: string;
+    category: string;
+}
+
+interface ApiEvent {
+    Time: string;
+    name: string;
+    category: string;
+}
+
+const upcomingListFetch = async (): Promise<Event[]> => {
+    const token = localStorage.getItem("access_token");
+  
+    if (!token) {
+        window.location.href = "/login";
+        throw new Error("AUTH_REQUIRED");
+    }
+  
+    try {
+        const response = await axios.post<{ upcommingList: ApiEvent[] }>(
+            "https://api.look-back.site/api/v1/calendar/dashboard-upcomming-schedule",
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+    
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(`API_ERROR_${response.status}`);
+        }
+    
+        return response.data.upcommingList.map(event => ({
+            ...event,
+            Time: new Date(event.Time)
+        }));
+    } catch (err) {
+        console.error("API 호출 중 오류:", err);
+        throw err;
+    }
+};
+
+const formatDate = (date: Date): string => {
+    try {
+        if (!(date instanceof Date) || isNaN(date.getTime())) {
+            throw new Error('Invalid date');
+        }
+        return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (error) {
+        console.error('Date formatting error:', error);
+        return '날짜 형식 오류';
+    }
+};
 
 const UpcomingSchedule: React.FC = () => {
-    const [nextEvents, setNextEvents] = useState([]);
+    const [nextEvents, setNextEvents] = useState<Event[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch the next 5 events from your database
-        // This is a placeholder. Replace with your actual API call
         const fetchNextEvents = async () => {
-            // Placeholder data
-            setNextEvents([
-                { time: '2024-11-04T10:00:00', name: 'Team Meeting', category: 'Work' },
-                { time: '2024-11-04T14:30:00', name: 'Dentist Appointment', category: 'Personal' },
-                { time: '2024-11-05T09:00:00', name: 'Project Deadline', category: 'Work' },
-                { time: '2024-11-05T18:00:00', name: 'Gym Session', category: 'Health' },
-                { time: '2024-11-06T12:00:00', name: 'Lunch with Client', category: 'Work' },
-            ]);
+            try {
+                setIsLoading(true);
+                setError(null);
+                const data = await upcomingListFetch();
+                setNextEvents(data);
+            } catch (err) {
+                if (err instanceof Error && err.message !== 'AUTH_REQUIRED') {
+                    setError('일정을 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.');
+                }
+            } finally {
+                setIsLoading(false);
+            }
         };
 
         fetchNextEvents();
     }, []);
 
-    const getCategoryColor = (category) => {
-        switch(category) {
-            case 'Work': return 'bg-blue-200 text-blue-800';
-            case 'Personal': return 'bg-green-200 text-green-800';
-            case 'Health': return 'bg-red-200 text-red-800';
-            default: return 'bg-gray-200 text-gray-800';
-        }
-    };
+    if (isLoading) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Upcoming Schedule</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex justify-center items-center p-4">
+                        Loading...
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card>
@@ -38,32 +108,40 @@ const UpcomingSchedule: React.FC = () => {
                 <CardTitle>Upcoming Schedule</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[300px]">Time</TableHead>
-                                <TableHead>Event Name</TableHead>
-                                <TableHead>Category</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {nextEvents.map((event, index) => (
-                                <TableRow key={index}>
-                                    <TableCell className="font-medium">
-                                        {new Date(event.time).toLocaleString()}
-                                    </TableCell>
-                                    <TableCell>{event.name}</TableCell>
-                                    <TableCell>
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(event.category)}`}>
-                                            {event.category}
-                                        </span>
-                                    </TableCell>
+                {error && (
+                    <Alert variant="destructive" className="mb-4">
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+                
+                {!error && nextEvents.length === 0 ? (
+                    <div className="flex justify-center items-center p-4">
+                        예정된 일정이 없습니다.
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[300px]">Time</TableHead>
+                                    <TableHead>Event Name</TableHead>
+                                    <TableHead>Category</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
+                            </TableHeader>
+                            <TableBody>
+                                {nextEvents.map((event, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell className="font-medium">
+                                            {formatDate(event.Time)}
+                                        </TableCell>
+                                        <TableCell>{event.name}</TableCell>
+                                        <TableCell>{event.category}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
