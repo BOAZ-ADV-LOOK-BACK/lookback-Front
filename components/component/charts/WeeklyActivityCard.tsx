@@ -26,7 +26,7 @@ const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
 
   try {
     const response = await axios.post(
-      "https://api.look-back.site/api/v1/calendar/dashboard-spendingTime",
+      "https://api.look-back.site/api/v1/calendar/dashboard-by-day-events",
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -35,7 +35,7 @@ const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
       throw new Error(`HTTP 상태 코드 오류: ${response.status}`);
     }
 
-    return response.data.spendingTime;
+    return response.data.user_day_event_count;
   } catch (err) {
     console.error("API 호출 중 오류:", err);
     throw new Error("API 호출 중 오류가 발생했습니다.");
