@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 
+import axios from "axios";
+
 interface Event {
     time: string; // ISO 날짜 형식의 문자열
     name: string;
@@ -16,7 +18,7 @@ const UpcomingSchedule: React.FC = () => {
         const fetchNextEvents = async () => {
             try {
                 // 실제 API 호출로 데이터를 가져옵니다.
-                const response = await fetch('http://your-backend-api-endpoint.com/events');
+                const response = await  axios.post("https://api.look-back.site/api/v1/calendar/dashboard-upcomming-schedule");
                 const data = await response.json();
 
                 // 백엔드 데이터 키를 프론트엔드에서 사용하는 키로 변환
