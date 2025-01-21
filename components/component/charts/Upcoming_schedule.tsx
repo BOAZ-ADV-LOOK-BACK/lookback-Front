@@ -40,7 +40,7 @@ const upcomingListFetch = async (): Promise<Event[]> => {
             Time: new Date(event.Time)
         }));
     } catch (err) {
-        console.error("API È£Ãâ Áß ¿À·ù:", err);
+        console.error("API í˜¸ì¶œ ì¤‘ ì˜¤ë¥˜:", err);
         throw err;
     }
 };
@@ -59,7 +59,7 @@ const formatDate = (date: Date): string => {
         });
     } catch (error) {
         console.error('Date formatting error:', error);
-        return '³¯Â¥ Çü½Ä ¿À·ù';
+        return 'ë‚ ì§œ í˜•ì‹ ì˜¤ë¥˜';
     }
 };
 
@@ -77,7 +77,7 @@ const UpcomingSchedule: React.FC = () => {
                 setNextEvents(data);
             } catch (err) {
                 if (err instanceof Error && err.message !== 'AUTH_REQUIRED') {
-                    setError('ÀÏÁ¤À» ºÒ·¯¿À´Â µ¥ ½ÇÆĞÇß½À´Ï´Ù. Àá½Ã ÈÄ ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.');
+                    setError('ì¼ì •ì„ ë¶ˆëŸ¬ì˜¤ëŠ” ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤. ì ì‹œ í›„ ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.');
                 }
             } finally {
                 setIsLoading(false);
@@ -116,7 +116,7 @@ const UpcomingSchedule: React.FC = () => {
                 
                 {!error && nextEvents.length === 0 ? (
                     <div className="flex justify-center items-center p-4">
-                        ¿¹Á¤µÈ ÀÏÁ¤ÀÌ ¾ø½À´Ï´Ù.
+                        ì˜ˆì •ëœ ì¼ì •ì´ ì—†ìŠµë‹ˆë‹¤.
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
