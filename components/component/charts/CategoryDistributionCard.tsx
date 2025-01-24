@@ -18,7 +18,7 @@ const darkenColor = (hexColor: string, amount: number): string => {
   return `rgb(${r}, ${g}, ${b})`;
 };
 
-const fetchCategoryDistribution = async (token: string): Promise<{ category: string; entry_number: number }[]> => {
+const fetchCategoryDistribution = async (token: string): Promise<{ category: string; summary: string; entry_number: number }[]> => {
   try {
     const response = await axios.post(
       "https://api.look-back.site/api/v1/calendar/dashboard-category-dist",
@@ -38,7 +38,7 @@ const fetchCategoryDistribution = async (token: string): Promise<{ category: str
 };
 
 export function CategoryDistributionCard() {
-  const [categories, setCategories] = useState<{ category: string; entry_number: number }[] | null>(null);
+  const [categories, setCategories] = useState<{ category: string; summary: string; entry_number: number }[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -95,7 +95,7 @@ export function CategoryDistributionCard() {
             <Pie
               data={categories}
               dataKey="entry_number"
-              nameKey="category"
+              nameKey="summary"
               cx="50%"
               cy="35%"
               outerRadius={110}
