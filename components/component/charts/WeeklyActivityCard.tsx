@@ -26,7 +26,7 @@ const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
 
   try {
     const response = await axios.post(
-      "https://api.look-back.site/api/v1/calendar/dashboard-spendingTime",
+      "https://api.look-back.site/api/v1/calendar/dashboard-by-day-events",
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -35,7 +35,7 @@ const weeklyActivityFetch = async (): Promise<ActivityResponse> => {
       throw new Error(`HTTP 상태 코드 오류: ${response.status}`);
     }
 
-    return response.data.spendingTime;
+    return response.data.user_day_event_count;
   } catch (err) {
     console.error("API 호출 중 오류:", err);
     throw new Error("API 호출 중 오류가 발생했습니다.");
@@ -92,6 +92,7 @@ function ActivityChartContainer({ className, userName }: { className?: string; u
       try {
         setIsLoading(true);
         const data = await weeklyActivityFetch();
+        console.log("백엔드 응답 데이터:", data); 
         
         const transformedData = Object.entries(data).map(([key, value]) => ({
           name: key,
@@ -101,6 +102,7 @@ function ActivityChartContainer({ className, userName }: { className?: string; u
         setChartData(transformedData);
         setError(null);
       } catch (err) {
+        console.error("데이터 처리 중 오류:", err);
         setError("데이터를 불러오는 데 실패했습니다.");
       } finally {
         setIsLoading(false);
@@ -138,7 +140,7 @@ export function WeeklyActivityCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>이번 주 {userName}님의 활동</CardTitle>
+        <CardTitle>저번 주 {userName}님의 활동</CardTitle>
         <CardDescription>Tasks Completed</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
