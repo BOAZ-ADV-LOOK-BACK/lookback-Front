@@ -42,7 +42,7 @@ const fetchProgress = async (): Promise<number> => {
       throw new Error("올바르지 않은 API 응답 형식입니다.");
     }
 
-    const godLifeIndex = Math.floor(data.godLifeBar); // 소수점 아래 버림
+    const godLifeIndex = Math.floor((data.godLifeBar * 100) / 7); // 소수점 아래 버림
     return Math.min(100, Math.max(0, godLifeIndex)); // 0~100 범위로 제한
   } catch (error: any) {
     console.error("API 호출 중 오류:", error.message || error);
