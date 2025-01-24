@@ -52,6 +52,7 @@ const fetchProgress = async (): Promise<number> => {
 
 export function GodLifeIndex() {
   const [progress, setProgress] = useState<number | null>(null);
+  const [moreTime, setMoreTime] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,6 +62,7 @@ export function GodLifeIndex() {
         setIsLoading(true);
         const data = await fetchProgress();
         setProgress(data);
+        setMoreTime(data/100*20);
         setError(null);
       } catch (err) {
         setError("데이터를 불러오는 데 실패했습니다.");
@@ -85,7 +87,7 @@ export function GodLifeIndex() {
   return (
     <Card className="flex-1 h-[200px]"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
       <CardHeader>
-        <CardDescription>지난 주 보다{progress}시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
+        <CardDescription>지난 주 보다 {moreTime}시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
         <CardTitle>{progress !== null ? `${progress}%` : 'Loading...'}</CardTitle>
       </CardHeader>
       <CardContent>
