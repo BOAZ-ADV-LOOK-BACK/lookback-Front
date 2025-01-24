@@ -45,52 +45,45 @@ const upcommingListFetch = async (): Promise<ActivityResponse[]> => {
       throw new Error("API 호출 중 오류가 발생했습니다.");
     }
   };
-
-const UpcomingSchedule: React.FC = () => {
+  const UpcomingSchedule: React.FC = () => {
     const [nextEvents, setNextEvents] = useState<ChartData[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [chartData, setChartData] = React.useState<ChartData[]>([]);
 
     useEffect(() => {
-        // Fetch the next 5 events from your database
-        // This is a placeholder. Replace with your actual API call
         const fetchNextEvents = async () => {
-
-            try{
+            try {
                 setIsLoading(true);
-            
                 const data: ActivityResponse[] = await upcommingListFetch();
                 const transformedData: ChartData[] = data.map((item) => ({
                     time: item["time"],
                     name: item["name"],
-                    category: item["category"]
+                    category: item["category"],
                 }));
 
                 setNextEvents(transformedData);
                 setError(null);
-            }
-
-            catch (err){
+            } catch (err) {
                 setError("데이터를 불러오는 데 실패했습니다.");
-            }
-
-            finally{
+            } finally {
                 setIsLoading(false);
             }
-            // Placeholder data
-            
         };
 
         fetchNextEvents();
     }, []);
 
-    const getCategoryColor = (category) => {
-        switch(category) {
-            case 'Work': return 'bg-blue-200 text-blue-800';
-            case 'Personal': return 'bg-green-200 text-green-800';
-            case 'Health': return 'bg-red-200 text-red-800';
-            default: return 'bg-gray-200 text-gray-800';
+    const getCategoryColor = (category: string) => {
+        switch (category) {
+            case 'Work':
+                return 'bg-blue-200 text-blue-800';
+            case 'Personal':
+                return 'bg-green-200 text-green-800';
+            case 'Health':
+                return 'bg-red-200 text-red-800';
+            default:
+                return 'bg-gray-200 text-gray-800';
         }
     };
 
@@ -110,14 +103,19 @@ const UpcomingSchedule: React.FC = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {nextEvents.map((event, index) => (
+                            {/* 배열을 역순으로 렌더링 */}
+                            {nextEvents.slice().reverse().map((event, index) => (
                                 <TableRow key={index}>
                                     <TableCell className="font-medium">
                                         {new Date(event.time).toLocaleString()}
                                     </TableCell>
                                     <TableCell>{event.name}</TableCell>
                                     <TableCell>
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(event.category)}`}>
+                                        <span
+                                            className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(
+                                                event.category
+                                            )}`}
+                                        >
                                             {event.category}
                                         </span>
                                     </TableCell>
