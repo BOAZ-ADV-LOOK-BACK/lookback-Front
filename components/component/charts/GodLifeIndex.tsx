@@ -87,7 +87,7 @@ export function GodLifeIndex() {
   return (
     <Card className="flex-1 h-[200px]"> {/* 첫 번째 카드가 높이의 절반을 차지 */}
       <CardHeader>
-        <CardDescription>지난 주 보다 {moreTime}시간 더 활동했어요! <br></br> 책 5권을 읽은 것 만큼 성장했어요!</CardDescription>
+        <CardDescription>지난 주 보다 {moreTime}시간 더 활동했어요! <br></br> 책 0.7권을 읽은 것 만큼 성장했어요!</CardDescription>
         <CardTitle>{progress !== null ? `${progress}%` : 'Loading...'}</CardTitle>
       </CardHeader>
       <CardContent>
